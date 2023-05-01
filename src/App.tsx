@@ -40,6 +40,8 @@ function Heading({ date }: { date: Date }) {
       style={{
         flexDirection: "row-reverse",
         justifyContent: "space-between",
+        alignItems: "center",
+        padding: 8,
       }}
     >
       <Image source={"/some-logo.png"} style={{ width: 64 }} />
@@ -108,7 +110,66 @@ function NumberField({ label, value }: { label: string; value: number }) {
   );
 }
 
-// Create Document Component
+function PersonDetails({
+  person,
+  type,
+}: {
+  person: {
+    name: string;
+  };
+  type: "buyer" | "seller";
+}) {
+  return (
+    <View style={{ borderTop: 1, padding: 8, flexDirection: "column", gap: 8 }}>
+      <View
+        style={{
+          flexDirection: "row-reverse",
+          gap: 4,
+          justifyContent: "center",
+          fontSize: 8,
+        }}
+      >
+        <Text>{"مشخصات"}</Text>
+        <Text>{type === "buyer" ? "خریدار" : "فروشنده"}</Text>
+      </View>
+      <View
+        style={{
+          flexDirection: "row-reverse",
+          fontSize: 8,
+          gap: 24,
+        }}
+      >
+        <View>
+          <TextField label={SELLER_FORM.NAME} value={person.name} />
+          <View style={{ flexDirection: "row-reverse", gap: 24 }}>
+            <TextField label={"استان"} value={"تهران"} />
+            <TextField label={"شهرستان"} value={"تهران"} />
+            <TextField label={"شهر"} value={"تهران"} />
+          </View>
+          <TextField
+            label={"نشانی"}
+            value={
+              "خیابان شهید بهشتی -  خیابان  خیابان پاکستان - کوچه شهید ساوجی نیا -  پلاک ۵"
+            }
+          />
+        </View>
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <NumberField label={"شماره اقتصادی"} value={411558785873} />
+          <NumberField label={"شماره ثبت / شماره ملی"} value={14006138250} />
+        </View>
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <NumberField label={"کد پستی"} value={411558785873} />
+          <TextField
+            label={"شماره تلفن / نمابر"}
+            value={"(021)42070300"}
+            faNums
+          />
+        </View>
+      </View>
+    </View>
+  );
+}
+
 const InvoiceDocument = ({
   date,
   sellerDetails,
@@ -120,44 +181,10 @@ const InvoiceDocument = ({
 }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
-      <View style={{ border: 1, margin: 10 }}>
+      <View style={{ border: 1, margin: 10, borderRadius: 8 }}>
         <Heading date={date} />
-        <View
-          style={{
-            flexDirection: "row-reverse",
-            backgroundColor: "yellow",
-            fontSize: 8,
-            gap: 24,
-            padding: 8,
-          }}
-        >
-          <View>
-            <TextField label={SELLER_FORM.NAME} value={sellerDetails.name} />
-            <View style={{ flexDirection: "row-reverse", gap: 24 }}>
-              <TextField label={"استان"} value={"تهران"} />
-              <TextField label={"شهرستان"} value={"تهران"} />
-              <TextField label={"شهر"} value={"تهران"} />
-            </View>
-            <TextField
-              label={"نشانی"}
-              value={
-                "خیابان شهید بهشتی -  خیابان  خیابان پاکستان - کوچه شهید ساوجی نیا -  پلاک ۵"
-              }
-            />
-          </View>
-          <View style={{ flexDirection: "column", gap: 8 }}>
-            <NumberField label={"شماره اقتصادی"} value={411558785873} />
-            <NumberField label={"شماره ثبت / شماره ملی"} value={14006138250} />
-          </View>
-          <View style={{ flexDirection: "column", gap: 8 }}>
-            <NumberField label={"کد پستی"} value={411558785873} />
-            <TextField
-              label={"شماره تلفن / نمابر"}
-              value={"(021)42070300"}
-              faNums
-            />
-          </View>
-        </View>
+        <PersonDetails person={sellerDetails} type="seller" />
+        <PersonDetails person={sellerDetails} type="buyer" />
       </View>
     </Page>
   </Document>
