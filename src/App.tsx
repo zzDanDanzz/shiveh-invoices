@@ -170,6 +170,106 @@ function PersonDetails({
   );
 }
 
+const KEYS = {
+  description: "description",
+  quantity: "quantity",
+  pricePerUnit: "price_per_unit",
+  totalPrice: "total_price",
+  discount: "discount",
+  priceAfterDiscount: "price_after_discount",
+  taxSum: "tax_sum",
+  totalPriceWithTaxes: "total_price_with_taxes",
+} as const;
+
+const productTableHeadings = [
+  { title: "شرح کالا یا خدمات", key: KEYS.description },
+  { title: "تعداد /  مقدار", key: KEYS.quantity },
+  { title: "مبلغ واحد )ریال(", key: KEYS.pricePerUnit },
+  { title: "مبلغ کل )ریال(", key: KEYS.totalPrice },
+  { title: "مبلغ تخفیف )ریال(", key: KEYS.discount },
+  { title: "مبلغ کل پس از تخفیف )ریال(", key: KEYS.priceAfterDiscount },
+  { title: "جمع مالیات و عوارض )ریال(", key: KEYS.taxSum },
+  {
+    title: "جمع مبلغ کل بعلاوه مالیات و عوارض )ریال(",
+    key: KEYS.totalPriceWithTaxes,
+  },
+];
+
+const products = [
+  {
+    [KEYS.description]: "ارائه میزبانی سرویس نقشه یک ساله",
+    [KEYS.pricePerUnit]: "10000",
+    [KEYS.totalPrice]: "10000",
+    [KEYS.taxSum]: "10000",
+    [KEYS.totalPriceWithTaxes]: "10000",
+  },
+];
+
+function Table({ children }: React.PropsWithChildren) {
+  return (
+    <View style={{ padding: 16, flexDirection: "row-reverse" }}>
+      {children}
+    </View>
+  );
+}
+
+function THead({ children }: React.PropsWithChildren) {
+  return <Text style={{ borderBottom: 1 }}>{children}</Text>;
+}
+
+function TData({ children }: React.PropsWithChildren) {
+  return <Text>{children}</Text>;
+}
+
+function TCol({ children }: React.PropsWithChildren) {
+  return (
+    <View
+      style={{
+        flexDirection: "column",
+        backgroundColor: "yellow",
+        alignItems: "flex-end",
+        gap: 6,
+        // paddingHorizontal: 10,
+        borderRight: 1,
+        position: "relative",
+      }}
+    >
+      {children}
+    </View>
+  );
+}
+
+function ProductDetailsTable() {
+  return (
+    <View style={{ fontSize: 8 }}>
+      <View>
+        <Text>مشخصات کالا یا خدمات مورد معامله</Text>
+      </View>
+      <Table>
+        {/* <TRow>
+          {productTableHeadings.map((heading) => (
+            <THead>{heading.title}</THead>
+          ))}
+          {productTableHeadings.map((heading) => {
+            if (Object.hasOwn(products[0], heading.key)) {
+              return <TData>{products[0][heading.key]}</TData>;
+            }
+            return <TData></TData>;
+          })}
+        </TRow> */}
+        {productTableHeadings.map((heading) => (
+          <TCol key={heading.title}>
+            <THead>{heading.title}</THead>
+            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+            {/* @ts-ignore */}
+            <TData>{products[0][heading.key] ?? "unknown"}</TData>
+          </TCol>
+        ))}
+      </Table>
+    </View>
+  );
+}
+
 const InvoiceDocument = ({
   date,
   sellerDetails,
@@ -185,6 +285,7 @@ const InvoiceDocument = ({
         <Heading date={date} />
         <PersonDetails person={sellerDetails} type="seller" />
         <PersonDetails person={sellerDetails} type="buyer" />
+        <ProductDetailsTable />
       </View>
     </Page>
   </Document>
