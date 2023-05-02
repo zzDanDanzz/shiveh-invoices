@@ -8,6 +8,8 @@ import {
   PDFViewer,
   Font,
 } from "@react-pdf/renderer";
+import { User } from "./types";
+import { user } from "./mock";
 
 Font.register({
   family: "Vazirmatn-Regular",
@@ -23,7 +25,7 @@ Font.register({
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Vazirmatn-Regular",
-    fontSize: 12,
+    fontSize: 8,
   },
 });
 
@@ -55,11 +57,6 @@ function Heading({ date }: { date: Date }) {
     </View>
   );
 }
-
-const SELLER_FORM = {
-  DETAILS: "مشخصات فروشنده",
-  NAME: "نام شخص حقیقی /  حقوقی",
-};
 
 function TextField({
   label,
@@ -94,7 +91,6 @@ function NumberField({ label, value }: { label: string; value: number }) {
       }}
     >
       <Text style={{ fontFamily: "Vazirmatn-Bold" }}>:{label}</Text>
-      {/* <Text>{e2p(value.toString())}</Text> */}
 
       <View style={{ flexDirection: "row" }}>
         {nums.map((n, i) => (
@@ -114,11 +110,26 @@ function PersonDetails({
   person,
   type,
 }: {
-  person: {
-    name: string;
-  };
+  person: User;
   type: "buyer" | "seller";
 }) {
+  let accountType, name, nationalCode, nationalCodeLabel, phoneNumLabel;
+  const isNaturalPerson = person.account_type === "natural";
+
+  if (isNaturalPerson) {
+    accountType = "حقیقی";
+    name = person.name;
+    nationalCode = person.national_identity;
+    nationalCodeLabel = "شماره ملی";
+    phoneNumLabel = "تلفن ثابت";
+  } else {
+    accountType = "حقوقی";
+    name = person.company;
+    nationalCode = person.national_number;
+    nationalCodeLabel = "شماره ثبت";
+    phoneNumLabel = "تلفن ثابت / نمابر";
+  }
+
   return (
     <View style={{ borderTop: 1, padding: 8, flexDirection: "column", gap: 8 }}>
       <View
@@ -126,7 +137,6 @@ function PersonDetails({
           flexDirection: "row-reverse",
           gap: 4,
           justifyContent: "center",
-          fontSize: 8,
         }}
       >
         <Text>{"مشخصات"}</Text>
@@ -135,36 +145,34 @@ function PersonDetails({
       <View
         style={{
           flexDirection: "row-reverse",
-          fontSize: 8,
-          gap: 24,
+          flexWrap: "wrap",
+          gap: 16,
         }}
       >
-        <View>
-          <TextField label={SELLER_FORM.NAME} value={person.name} />
-          <View style={{ flexDirection: "row-reverse", gap: 24 }}>
-            <TextField label={"استان"} value={"تهران"} />
-            <TextField label={"شهرستان"} value={"تهران"} />
-            <TextField label={"شهر"} value={"تهران"} />
-          </View>
-          <TextField
-            label={"نشانی"}
-            value={
-              "خیابان شهید بهشتی -  خیابان  خیابان پاکستان - کوچه شهید ساوجی نیا -  پلاک ۵"
-            }
+        <TextField
+          label={`نام شخص ${accountType}`}
+          value={name || `${"نام"} موجود نیست`}
+        />
+        <TextField
+          label={"نشانی"}
+          value={person.address || `${"آدرس"} موجود نیست`}
+        />
+        {!isNaturalPerson && (
+          <NumberField
+            label={"شماره اقتصادی"}
+            value={person.financial_code || `${"کد اقتصادی"} موجود نیست`}
           />
-        </View>
-        <View style={{ flexDirection: "column", gap: 8 }}>
-          <NumberField label={"شماره اقتصادی"} value={411558785873} />
-          <NumberField label={"شماره ثبت / شماره ملی"} value={14006138250} />
-        </View>
-        <View style={{ flexDirection: "column", gap: 8 }}>
-          <NumberField label={"کد پستی"} value={411558785873} />
-          <TextField
-            label={"شماره تلفن / نمابر"}
-            value={"(021)42070300"}
-            faNums
-          />
-        </View>
+        )}
+        <NumberField label={nationalCodeLabel} value={nationalCode} />
+        <NumberField
+          label={"کد پستی"}
+          value={person.postalcode || `${"کد پستی"} موجود نیست`}
+        />
+        <TextField
+          label={phoneNumLabel}
+          value={person.telephone || `${phoneNumLabel} موجود نیست`}
+          faNums
+        />
       </View>
     </View>
   );
@@ -241,22 +249,11 @@ function TCol({ children }: React.PropsWithChildren) {
 
 function ProductDetailsTable() {
   return (
-    <View style={{ fontSize: 8 }}>
+    <View>
       <View>
         <Text>مشخصات کالا یا خدمات مورد معامله</Text>
       </View>
       <Table>
-        {/* <TRow>
-          {productTableHeadings.map((heading) => (
-            <THead>{heading.title}</THead>
-          ))}
-          {productTableHeadings.map((heading) => {
-            if (Object.hasOwn(products[0], heading.key)) {
-              return <TData>{products[0][heading.key]}</TData>;
-            }
-            return <TData></TData>;
-          })}
-        </TRow> */}
         {productTableHeadings.map((heading) => (
           <TCol key={heading.title}>
             <THead>{heading.title}</THead>
@@ -273,18 +270,18 @@ function ProductDetailsTable() {
 const InvoiceDocument = ({
   date,
   sellerDetails,
+  buyerDetails,
 }: {
   date: Date;
-  sellerDetails: {
-    name: string;
-  };
+  sellerDetails: User;
+  buyerDetails: User;
 }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
       <View style={{ border: 1, margin: 10, borderRadius: 8 }}>
         <Heading date={date} />
         <PersonDetails person={sellerDetails} type="seller" />
-        <PersonDetails person={sellerDetails} type="buyer" />
+        <PersonDetails person={buyerDetails} type="buyer" />
         <ProductDetailsTable />
       </View>
     </Page>
@@ -297,7 +294,19 @@ function App() {
       <PDFViewer className="w-screen h-screen">
         <InvoiceDocument
           date={new Date()}
-          sellerDetails={{ name: "شرکت شیوه نرم افزار گستر آسیا" }}
+          sellerDetails={
+            {
+              address:
+                "تهران، تهران، خیابان شهید بهشتی -  خیابان  خیابان پاکستان - کوچه شهید ساوجی نیا -  پلاک ۵",
+              account_type: "legal",
+              company: "شرکت شیوه نرم افزار گستر آسیا",
+              national_number: "14006138250",
+              financial_code: "411558785873",
+              postalcode: "1531735614",
+              telephone: "(021)42070300",
+            } as User
+          }
+          buyerDetails={user}
         />
       </PDFViewer>
     </div>
