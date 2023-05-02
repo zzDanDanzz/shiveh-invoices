@@ -7,7 +7,10 @@ import {
   StyleSheet,
   PDFViewer,
   Font,
+  Line,
+  Svg,
 } from "@react-pdf/renderer";
+
 import { User } from "./types";
 import { user } from "./mock";
 
@@ -144,35 +147,47 @@ function PersonDetails({
       </View>
       <View
         style={{
-          flexDirection: "row-reverse",
-          flexWrap: "wrap",
-          gap: 16,
+          flexDirection: "row",
+          justifyContent: "space-between",
         }}
       >
-        <TextField
-          label={`نام شخص ${accountType}`}
-          value={name || `${"نام"} موجود نیست`}
-        />
-        <TextField
-          label={"نشانی"}
-          value={person.address || `${"آدرس"} موجود نیست`}
-        />
-        {!isNaturalPerson && (
+        <View
+          style={{ flexDirection: "column", alignItems: "flex-start", gap: 6 }}
+        >
+          <View
+            style={{
+              flexDirection: "row-reverse",
+              gap: 8,
+            }}
+          >
+            {!isNaturalPerson && (
+              <NumberField
+                label={"شماره اقتصادی"}
+                value={person.financial_code || `${"کد اقتصادی"} موجود نیست`}
+              />
+            )}
+            <NumberField label={nationalCodeLabel} value={nationalCode} />
+          </View>
           <NumberField
-            label={"شماره اقتصادی"}
-            value={person.financial_code || `${"کد اقتصادی"} موجود نیست`}
+            label={"کد پستی"}
+            value={person.postalcode || `${"کد پستی"} موجود نیست`}
           />
-        )}
-        <NumberField label={nationalCodeLabel} value={nationalCode} />
-        <NumberField
-          label={"کد پستی"}
-          value={person.postalcode || `${"کد پستی"} موجود نیست`}
-        />
-        <TextField
-          label={phoneNumLabel}
-          value={person.telephone || `${phoneNumLabel} موجود نیست`}
-          faNums
-        />
+        </View>
+        <View style={{ flexDirection: "column", gap: 6 }}>
+          <TextField
+            label={`نام شخص ${accountType}`}
+            value={name || `${"نام"} موجود نیست`}
+          />
+          <TextField
+            label={"نشانی"}
+            value={person.address || `${"آدرس"} موجود نیست`}
+          />
+          <TextField
+            label={phoneNumLabel}
+            value={person.telephone || `${phoneNumLabel} موجود نیست`}
+            faNums
+          />
+        </View>
       </View>
     </View>
   );
@@ -192,13 +207,13 @@ const KEYS = {
 const productTableHeadings = [
   { title: "شرح کالا یا خدمات", key: KEYS.description },
   { title: "تعداد /  مقدار", key: KEYS.quantity },
-  { title: "مبلغ واحد )ریال(", key: KEYS.pricePerUnit },
-  { title: "مبلغ کل )ریال(", key: KEYS.totalPrice },
-  { title: "مبلغ تخفیف )ریال(", key: KEYS.discount },
-  { title: "مبلغ کل پس از تخفیف )ریال(", key: KEYS.priceAfterDiscount },
-  { title: "جمع مالیات و عوارض )ریال(", key: KEYS.taxSum },
+  { title: "مبلغ واحد", key: KEYS.pricePerUnit },
+  { title: "مبلغ کل", key: KEYS.totalPrice },
+  { title: "مبلغ تخفیف", key: KEYS.discount },
+  { title: "مبلغ کل پس از تخفیف", key: KEYS.priceAfterDiscount },
+  { title: "جمع مالیات و عوارض", key: KEYS.taxSum },
   {
-    title: "جمع مبلغ کل بعلاوه مالیات و عوارض )ریال(",
+    title: "جمع مبلغ کل بعلاوه مالیات و عوارض",
     key: KEYS.totalPriceWithTaxes,
   },
 ];
@@ -221,12 +236,22 @@ function Table({ children }: React.PropsWithChildren) {
   );
 }
 
-function THead({ children }: React.PropsWithChildren) {
-  return <Text style={{ borderBottom: 1 }}>{children}</Text>;
+interface TDataProps extends React.PropsWithChildren {
+  bold?: boolean;
 }
 
-function TData({ children }: React.PropsWithChildren) {
-  return <Text>{children}</Text>;
+function TData({ children, bold = false }: TDataProps) {
+  // const style: Style = bold ? { fontFamily: "Vazirmatn-Bold" } : undefined;
+  return (
+    <Text
+      style={{
+        fontFamily: bold ? "Vazirmatn-Bold" : undefined,
+        paddingHorizontal: 12,
+      }}
+    >
+      {children}
+    </Text>
+  );
 }
 
 function TCol({ children }: React.PropsWithChildren) {
@@ -237,7 +262,6 @@ function TCol({ children }: React.PropsWithChildren) {
         backgroundColor: "yellow",
         alignItems: "flex-end",
         gap: 6,
-        // paddingHorizontal: 10,
         borderRight: 1,
         position: "relative",
       }}
@@ -249,17 +273,29 @@ function TCol({ children }: React.PropsWithChildren) {
 
 function ProductDetailsTable() {
   return (
-    <View>
+    <View style={{ marginTop: 100 }}>
       <View>
-        <Text>مشخصات کالا یا خدمات مورد معامله</Text>
+        <Text>
+          مشخصات کالا یا خدمات مورد معامله (تمامی مبالغ به ریال هستند)
+        </Text>
       </View>
       <Table>
         {productTableHeadings.map((heading) => (
           <TCol key={heading.title}>
-            <THead>{heading.title}</THead>
+            <TData bold>{heading.title}</TData>
+            <Svg height={1} width={"100%"}>
+              <Line
+                x1={0}
+                x2={300}
+                y1={0}
+                y2={0}
+                strokeWidth={1}
+                stroke="red"
+              />
+            </Svg>
             {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
             {/* @ts-ignore */}
-            <TData>{products[0][heading.key] ?? "unknown"}</TData>
+            <TData>{products[0][heading.key] ?? ""}</TData>
           </TCol>
         ))}
       </Table>
