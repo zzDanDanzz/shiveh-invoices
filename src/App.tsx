@@ -11,8 +11,8 @@ import {
   Svg,
 } from "@react-pdf/renderer";
 
-import { User } from "./types";
-import { user } from "./mock";
+import { Invoice, Project, User } from "./types";
+import { invoice, user } from "./mock";
 
 Font.register({
   family: "Vazirmatn-Regular",
@@ -193,48 +193,30 @@ function PersonDetails({
   );
 }
 
-const KEYS = {
-  description: "description",
-  quantity: "quantity",
-  pricePerUnit: "price_per_unit",
-  totalPrice: "total_price",
-  discount: "discount",
-  priceAfterDiscount: "price_after_discount",
-  taxSum: "tax_sum",
-  totalPriceWithTaxes: "total_price_with_taxes",
-} as const;
-
-const productTableHeadings = [
-  { title: "شرح کالا یا خدمات", key: KEYS.description },
-  { title: "تعداد /  مقدار", key: KEYS.quantity },
-  { title: "مبلغ واحد", key: KEYS.pricePerUnit },
-  { title: "مبلغ کل", key: KEYS.totalPrice },
-  { title: "مبلغ تخفیف", key: KEYS.discount },
-  { title: "مبلغ کل پس از تخفیف", key: KEYS.priceAfterDiscount },
-  { title: "جمع مالیات و عوارض", key: KEYS.taxSum },
+const productTableHeadings: {
+  title: string;
+  getValue: ((inv: Invoice) => string) | null;
+}[] = [
+  { title: "شرح کالا یا خدمات", getValue: (inv) => inv.plan.name },
+  { title: "تعداد /  مقدار", getValue: (inv) => inv.details.month },
+  {
+    title: "مبلغ کل",
+    getValue: (inv) =>
+      (
+        inv["plan"]["cost_per_month"] * Number(inv["details"]["month"])
+      ).toString(),
+  },
+  { title: "مبلغ تخفیف", getValue: null },
+  { title: "مبلغ کل پس از تخفیف", getValue: null },
+  {
+    title: "جمع مالیات و عوارض",
+    getValue: (inv) => inv.details.tax.toString(),
+  },
   {
     title: "جمع مبلغ کل بعلاوه مالیات و عوارض",
-    key: KEYS.totalPriceWithTaxes,
+    getValue: (inv) => inv.final_price.toString(),
   },
 ];
-
-const products = [
-  {
-    [KEYS.description]: "ارائه میزبانی سرویس نقشه یک ساله",
-    [KEYS.pricePerUnit]: "10000",
-    [KEYS.totalPrice]: "10000",
-    [KEYS.taxSum]: "10000",
-    [KEYS.totalPriceWithTaxes]: "10000",
-  },
-];
-
-function Table({ children }: React.PropsWithChildren) {
-  return (
-    <View style={{ padding: 16, flexDirection: "row-reverse" }}>
-      {children}
-    </View>
-  );
-}
 
 interface TDataProps extends React.PropsWithChildren {
   bold?: boolean;
@@ -259,7 +241,6 @@ function TCol({ children }: React.PropsWithChildren) {
     <View
       style={{
         flexDirection: "column",
-        backgroundColor: "yellow",
         alignItems: "flex-end",
         gap: 6,
         borderRight: 1,
@@ -271,34 +252,38 @@ function TCol({ children }: React.PropsWithChildren) {
   );
 }
 
-function ProductDetailsTable() {
+function ProductDetailsTable({ invoice }: { invoice: Project["invoice"][0] }) {
   return (
-    <View style={{ marginTop: 100 }}>
-      <View>
-        <Text>
-          مشخصات کالا یا خدمات مورد معامله (تمامی مبالغ به ریال هستند)
-        </Text>
-      </View>
-      <Table>
+    <View style={{ borderTop: 1, paddingTop: 8 }}>
+      <Text style={{ textAlign: "center" }}>
+        مشخصات کالا یا خدمات مورد معامله )تمامی مبالغ به ریال هستند(
+      </Text>
+      <View
+        style={{
+          padding: 16,
+          flexDirection: "row-reverse",
+          justifyContent: "center",
+        }}
+      >
         {productTableHeadings.map((heading) => (
           <TCol key={heading.title}>
             <TData bold>{heading.title}</TData>
-            <Svg height={1} width={"100%"}>
+            <Svg height={2} width={"100%"}>
               <Line
                 x1={0}
                 x2={300}
                 y1={0}
                 y2={0}
-                strokeWidth={1}
-                stroke="red"
+                strokeWidth={2}
+                stroke="black"
               />
             </Svg>
             {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
             {/* @ts-ignore */}
-            <TData>{products[0][heading.key] ?? ""}</TData>
+            <TData>{heading.getValue?.(invoice) ?? ""}</TData>
           </TCol>
         ))}
-      </Table>
+      </View>
     </View>
   );
 }
@@ -307,10 +292,12 @@ const InvoiceDocument = ({
   date,
   sellerDetails,
   buyerDetails,
+  invoice,
 }: {
   date: Date;
   sellerDetails: User;
   buyerDetails: User;
+  invoice: Project["invoice"][0];
 }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
@@ -318,7 +305,7 @@ const InvoiceDocument = ({
         <Heading date={date} />
         <PersonDetails person={sellerDetails} type="seller" />
         <PersonDetails person={buyerDetails} type="buyer" />
-        <ProductDetailsTable />
+        <ProductDetailsTable invoice={invoice} />
       </View>
     </Page>
   </Document>
@@ -343,6 +330,7 @@ function App() {
             } as User
           }
           buyerDetails={user}
+          invoice={invoice}
         />
       </PDFViewer>
     </div>

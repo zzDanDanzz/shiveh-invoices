@@ -1,3 +1,4 @@
+
 export interface User {
     id: string;
     name: string;
@@ -111,7 +112,7 @@ export interface User {
     ttl_in_hour: number;
   }
   
-  interface Invoice {
+  export interface Invoice {
     id: number;
     client_id: number;
     details: Details;
@@ -210,5 +211,3 @@ export interface User {
   }
   
   export type AccountType = "legal" | "natural";
-  
-  
