@@ -1,5 +1,4 @@
 import { View, Svg, Line, Text } from "@react-pdf/renderer";
-import { Invoice, Project } from "../../types";
 
 interface TDataProps extends React.PropsWithChildren {
   bold?: boolean;

@@ -1,5 +1,3 @@
-import { Project, User } from "./types";
-
 export const invoice: Project["invoice"][0] = {
   id: 631,
   client_id: 330,

@@ -1,7 +1,6 @@
 import { BlobProvider } from "@react-pdf/renderer";
-import { User } from "./types";
 import { invoice, user } from "./mock";
-import InvoiceDocument from "./invoice-pdf";
+import InvoiceDocument from "../shiveh-invoice";
 import { useEffect, useState } from "react";
 
 function Demo() {

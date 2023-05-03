@@ -1,8 +1,17 @@
-import { PDFViewer } from "@react-pdf/renderer";
-import { User } from "./types";
+import { Font, PDFViewer } from "@react-pdf/renderer";
 import { invoice, user } from "./mock";
-import InvoiceDocument from "./invoice-pdf";
+import InvoiceDocument from "../shiveh-invoice";
 import "./demo.css";
+
+Font.register({
+  family: "Vazirmatn-Regular",
+  src: "/fonts/Vazirmatn-Regular.ttf",
+});
+
+Font.register({
+  family: "Vazirmatn-Bold",
+  src: "/fonts/Vazirmatn-Bold.ttf",
+});
 
 function Demo() {
   return (

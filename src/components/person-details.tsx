@@ -1,5 +1,4 @@
 import { View, Text } from "@react-pdf/renderer";
-import { User } from "../../types";
 import NumberField from "./number-field";
 import TextField from "./text-field";
 

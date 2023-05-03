@@ -1,17 +1,6 @@
-import { Font, View, Page, Image, Text, Document } from "@react-pdf/renderer";
-import { User, Project } from "../types";
+import { View, Page, Image, Text, Document } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
-
-Font.register({
-  family: "Vazirmatn-Regular",
-  src: "/fonts/Vazirmatn-Regular.ttf",
-});
-
-Font.register({
-  family: "Vazirmatn-Bold",
-  src: "/fonts/Vazirmatn-Bold.ttf",
-});
 
 const HEADING_CONTENT = {
   TITLE: "صورت حساب فروش کالا و خدمات",
