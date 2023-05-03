@@ -8,8 +8,7 @@ function Demo() {
 
   const document = (
     <InvoiceDocument
-    logoSrc=""
-      date={new Date()}
+      logoSrc="/some-logo.png"
       sellerDetails={{
         address:
           "تهران، تهران، خیابان شهید بهشتی -  خیابان  خیابان پاکستان - کوچه شهید ساوجی نیا -  پلاک ۵",

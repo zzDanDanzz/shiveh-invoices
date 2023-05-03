@@ -21,7 +21,6 @@ function Demo() {
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
       <InvoiceDocument
         logoSrc={logo}
-        date={new Date()}
         sellerDetails={{
           address:
             "تهران، تهران، خیابان شهید بهشتی -  خیابان  خیابان پاکستان - کوچه شهید ساوجی نیا -  پلاک ۵",
