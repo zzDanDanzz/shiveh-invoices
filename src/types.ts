@@ -27,44 +27,15 @@ export interface User {
     is_mobile_verified: boolean;
     is_email_verified: boolean;
     alerts: any[];
-    roles: Role[];
+    roles: any[];
     my_app?: any;
     action_areas: any[];
     action_time: any[];
   }
   
-  interface Role {
-    id: number;
-    name: string;
-    scope?: string;
-    title?: string;
-    user_count: number;
-    pivot: Pivot;
-    permissions: Permission[];
-  }
   
-  interface Permission {
-    id: number;
-    domain?: string | string;
-    action: string;
-    access: string;
-    subdomain?: string;
-    description?: string;
-    service: string;
-    identifier?: any;
-    title?: (null | string)[];
-    pivot: Pivot2;
-  }
   
-  interface Pivot2 {
-    role_id: number;
-    permission_id: number;
-  }
-  
-  interface Pivot {
-    user_id: string;
-    role_id: number;
-  }
+
   
   export interface Project {
     id: number;
