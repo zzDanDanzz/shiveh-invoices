@@ -1,7 +1,7 @@
 import { View, Page, Image, Text, Document } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
-import { User, Project } from "./types";
+import { Seller, Buyer, Invoice } from "./types";
 
 const HEADING_CONTENT = {
   TITLE: "صورت حساب فروش کالا و خدمات",
@@ -29,17 +29,6 @@ function Heading({ date }: { date: Date }) {
   );
 }
 
-type Seller = Pick<
-  User,
-  | "address"
-  | "account_type"
-  | "company"
-  | "national_number"
-  | "financial_code"
-  | "postalcode"
-  | "telephone"
->;
-
 const InvoiceDocument = ({
   date,
   sellerDetails,
@@ -48,8 +37,8 @@ const InvoiceDocument = ({
 }: {
   date: Date;
   sellerDetails: Seller;
-  buyerDetails: User;
-  invoice: Project["invoice"][0];
+  buyerDetails: Buyer;
+  invoice: Invoice;
 }) => (
   <Document>
     <Page

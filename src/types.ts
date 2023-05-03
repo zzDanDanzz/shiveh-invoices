@@ -1,4 +1,47 @@
-export interface User {
+export type Seller = Pick<
+  User,
+  | "address"
+  | "account_type"
+  | "company"
+  | "national_number"
+  | "financial_code"
+  | "postalcode"
+  | "telephone"
+>;
+
+export type Buyer = Pick<
+  User,
+  | "address"
+  | "account_type"
+  | "company"
+  | "name"
+  | "national_number"
+  | "national_identity"
+  | "financial_code"
+  | "postalcode"
+  | "telephone"
+>;
+
+export interface Invoice {
+  id: number;
+  client_id: number;
+  details: Details;
+  from_date: string;
+  to_date: string;
+  is_paid: boolean;
+  created_at: string;
+  updated_at: string;
+  cost: string;
+  type: string;
+  invoice_number?: any;
+  cost_in_string: string;
+  status: string;
+  final_price: number;
+  balance: number;
+  plan: Plan;
+}
+
+interface User {
   id: string;
   name: string;
   email: string;
@@ -32,71 +75,6 @@ export interface User {
   action_time: any[];
 }
 
-export interface Project {
-  id: number;
-  name: string;
-  scopes: string[];
-  personal_access_client: boolean;
-  password_access_client: boolean;
-  created_at: string;
-  updated_at: string;
-  ip?: any;
-  domain?: any;
-  to_date: string;
-  is_disabled: boolean;
-  balance: number;
-  plan_id: number;
-  preferred_plan_id: number;
-  redirect_uri: string;
-  total_count: number;
-  rate: number;
-  logo?: any;
-  is_disabled_admin?: any;
-  company?: any;
-  access_token: AccessToken;
-  old_access_token: OldAccessToken | null;
-  current_plan: CurrentPlan;
-  reserved_plan?: any;
-  history: CurrentPlan[];
-  invoice: Invoice[];
-  user: User;
-  remain: number;
-  use: number;
-  ttl: number;
-}
-
-interface OldAccessToken {
-  token: string;
-  user_id?: any;
-  client_id: number;
-  scopes?: any;
-  expired_at: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at?: any;
-  ttl: number;
-  ttl_in_hour: number;
-}
-
-export interface Invoice {
-  id: number;
-  client_id: number;
-  details: Details;
-  from_date: string;
-  to_date: string;
-  is_paid: boolean;
-  created_at: string;
-  updated_at: string;
-  cost: string;
-  type: string;
-  invoice_number?: any;
-  cost_in_string: string;
-  status: string;
-  final_price: number;
-  balance: number;
-  plan: Plan;
-}
-
 interface Plan {
   id: number;
   name: string;
@@ -117,19 +95,6 @@ interface Details {
   tax: number;
 }
 
-interface CurrentPlan {
-  id: number;
-  plan_id: number;
-  from_date: string;
-  to_date: string;
-  expense: string;
-  is_paid: boolean;
-  client_id: number;
-  updated_at: string;
-  created_at: string;
-  plan: Plan;
-}
-
 interface Plan {
   id: number;
   name: string;
@@ -141,17 +106,6 @@ interface Plan {
 interface CostPerYear {
   en: number;
   fa: string;
-}
-
-interface AccessToken {
-  token: string;
-  user_id?: any;
-  client_id: number;
-  scopes?: any;
-  expired_at: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at?: any;
 }
 
 export interface UsageReportData {

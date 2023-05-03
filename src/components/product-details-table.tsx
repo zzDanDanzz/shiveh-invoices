@@ -1,4 +1,5 @@
 import { View, Svg, Line, Text } from "@react-pdf/renderer";
+import { Invoice } from "../types";
 
 interface TDataProps extends React.PropsWithChildren {
   bold?: boolean;
@@ -71,7 +72,7 @@ function Divider() {
   );
 }
 
-function ProductDetailsTable({ invoice }: { invoice: Project["invoice"][0] }) {
+function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
   return (
     <View style={{ borderTop: 1, paddingTop: 8 }}>
       <Text style={{ textAlign: "center" }}>

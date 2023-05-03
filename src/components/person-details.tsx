@@ -1,12 +1,21 @@
 import { View, Text } from "@react-pdf/renderer";
 import NumberField from "./number-field";
 import TextField from "./text-field";
+import { Buyer, Seller } from "../types";
+
+/**
+     person.account_type
+    name = person.name;
+    nationalCode = person.national_identity;
+
+
+ */
 
 function PersonDetails({
   person,
   type,
 }: {
-  person: User;
+  person: Buyer | Seller;
   type: "buyer" | "seller";
 }) {
   let accountType, name, nationalCode, nationalCodeLabel, phoneNumLabel;
@@ -14,8 +23,8 @@ function PersonDetails({
 
   if (isNaturalPerson) {
     accountType = "حقیقی";
-    name = person.name;
-    nationalCode = person.national_identity;
+    name = (person as Buyer).name;
+    nationalCode = (person as Buyer).national_identity;
     nationalCodeLabel = "شماره ملی";
     phoneNumLabel = "تلفن ثابت";
   } else {
@@ -59,7 +68,10 @@ function PersonDetails({
                 value={person.financial_code || `${"کد اقتصادی"} موجود نیست`}
               />
             )}
-            <NumberField label={nationalCodeLabel} value={nationalCode} />
+            <NumberField
+              label={nationalCodeLabel}
+              value={Number(nationalCode)}
+            />
           </View>
           <NumberField
             label={"کد پستی"}
