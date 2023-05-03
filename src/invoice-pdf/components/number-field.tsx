@@ -1,4 +1,4 @@
-import { View , Text} from "@react-pdf/renderer";
+import { View, Text } from "@react-pdf/renderer";
 import { e2p } from "../utils";
 
 function NumberField({ label, value }: { label: string; value: number }) {
@@ -15,10 +15,7 @@ function NumberField({ label, value }: { label: string; value: number }) {
 
       <View style={{ flexDirection: "row" }}>
         {nums.map((n, i) => (
-          <View
-            style={{ border: 1, textAlign: "center" }}
-            key={n.toString() + i}
-          >
+          <View style={{ border: 1, textAlign: "center" }} key={i}>
             <Text style={{ width: 12 }}>{n}</Text>
           </View>
         ))}
@@ -27,4 +24,4 @@ function NumberField({ label, value }: { label: string; value: number }) {
   );
 }
 
-export default  NumberField
+export default NumberField;

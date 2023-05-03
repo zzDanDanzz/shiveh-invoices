@@ -87,22 +87,20 @@ function ProductDetailsTable({ invoice }: { invoice: Project["invoice"][0] }) {
         }}
       >
         {productTableHeadings.map((heading, i) => (
-          <>
-            <TCol
-              key={heading.title}
-              {...(productTableHeadings.length - 1 === i && {
-                borderLeft: true,
-              })}
-            >
-              <Divider />
-              <TData bold>{heading.title}</TData>
-              <Divider />
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <TData>{heading.getValue?.(invoice) ?? " "}</TData>
-              <Divider />
-            </TCol>
-          </>
+          <TCol
+            key={heading.title}
+            {...(productTableHeadings.length - 1 === i && {
+              borderLeft: true,
+            })}
+          >
+            <Divider />
+            <TData bold>{heading.title}</TData>
+            <Divider />
+            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+            {/* @ts-ignore */}
+            <TData>{heading.getValue?.(invoice) ?? " "}</TData>
+            <Divider />
+          </TCol>
         ))}
       </View>
     </View>
