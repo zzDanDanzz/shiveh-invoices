@@ -35,8 +35,8 @@ function TData({ children, bold = false }: TDataProps) {
   return (
     <Text
       style={{
-        fontFamily: bold ? "Vazirmatn-Bold" : undefined,
         paddingHorizontal: 12,
+        ...(bold && { fontFamily: "Vazirmatn-Bold" }),
       }}
     >
       {children}
@@ -44,7 +44,10 @@ function TData({ children, bold = false }: TDataProps) {
   );
 }
 
-function TCol({ children }: React.PropsWithChildren) {
+function TCol({
+  children,
+  borderLeft,
+}: { borderLeft?: boolean } & React.PropsWithChildren) {
   return (
     <View
       style={{
@@ -53,10 +56,19 @@ function TCol({ children }: React.PropsWithChildren) {
         gap: 6,
         borderRight: 1,
         position: "relative",
+        ...(borderLeft && { borderLeft: 1 }),
       }}
     >
       {children}
     </View>
+  );
+}
+
+function Divider() {
+  return (
+    <Svg height={2} width={"100%"}>
+      <Line x1={0} x2={300} y1={1} y2={1} strokeWidth={1} stroke="black" />
+    </Svg>
   );
 }
 
@@ -66,6 +78,7 @@ function ProductDetailsTable({ invoice }: { invoice: Project["invoice"][0] }) {
       <Text style={{ textAlign: "center" }}>
         مشخصات کالا یا خدمات مورد معامله )تمامی مبالغ به ریال هستند(
       </Text>
+
       <View
         style={{
           padding: 16,
@@ -73,23 +86,23 @@ function ProductDetailsTable({ invoice }: { invoice: Project["invoice"][0] }) {
           justifyContent: "center",
         }}
       >
-        {productTableHeadings.map((heading) => (
-          <TCol key={heading.title}>
-            <TData bold>{heading.title}</TData>
-            <Svg height={2} width={"100%"}>
-              <Line
-                x1={0}
-                x2={300}
-                y1={0}
-                y2={0}
-                strokeWidth={2}
-                stroke="black"
-              />
-            </Svg>
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-ignore */}
-            <TData>{heading.getValue?.(invoice) ?? ""}</TData>
-          </TCol>
+        {productTableHeadings.map((heading, i) => (
+          <>
+            <TCol
+              key={heading.title}
+              {...(productTableHeadings.length - 1 === i && {
+                borderLeft: true,
+              })}
+            >
+              <Divider />
+              <TData bold>{heading.title}</TData>
+              <Divider />
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
+              <TData>{heading.getValue?.(invoice) ?? " "}</TData>
+              <Divider />
+            </TCol>
+          </>
         ))}
       </View>
     </View>
