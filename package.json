@@ -12,7 +12,7 @@
       "require": "./dist/shiveh-invoice.umd.cjs"
     }
   },
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
@@ -37,9 +37,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "typescript": "^5.0.2",
-    "vite": "^4.3.2"
-  },
-  "dependencies": {
+    "vite": "^4.3.2",
     "vite-plugin-dts": "^2.3.0"
   }
 }

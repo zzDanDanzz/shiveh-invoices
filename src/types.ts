@@ -11,11 +11,11 @@ export interface User {
   mobile: string;
   is_disabled: boolean;
   image?: any;
-  national_number?: any;
+  national_number?: string;
   company?: any;
   postalcode?: any;
   telephone?: any;
-  national_identity?: any;
+  national_identity?: string;
   financial_code?: any;
   account_type: AccountType;
   is_hardcoded: boolean;
