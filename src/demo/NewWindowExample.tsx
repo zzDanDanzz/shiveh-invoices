@@ -8,6 +8,7 @@ function Demo() {
 
   const document = (
     <InvoiceDocument
+    logoSrc=""
       date={new Date()}
       sellerDetails={{
         address:

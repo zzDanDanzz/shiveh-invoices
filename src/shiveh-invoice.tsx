@@ -7,7 +7,7 @@ const HEADING_CONTENT = {
   TITLE: "صورت حساب فروش کالا و خدمات",
 };
 
-function Heading({ date }: { date: Date }) {
+function Heading({ date, logoSrc }: { date: Date; logoSrc: string }) {
   return (
     <View
       style={{
@@ -17,7 +17,7 @@ function Heading({ date }: { date: Date }) {
         padding: 8,
       }}
     >
-      <Image source={"/some-logo.png"} style={{ width: 64 }} />
+      <Image source={logoSrc} style={{ width: 64 }} />
       <Text>{HEADING_CONTENT.TITLE}</Text>
       <View style={{ flexDirection: "row", gap: 10 }}>
         <Text>
@@ -34,11 +34,13 @@ const InvoiceDocument = ({
   sellerDetails,
   buyerDetails,
   invoice,
+  logoSrc,
 }: {
   date: Date;
   sellerDetails: Seller;
   buyerDetails: Buyer;
   invoice: Invoice;
+  logoSrc: string;
 }) => (
   <Document>
     <Page
@@ -50,7 +52,7 @@ const InvoiceDocument = ({
       }}
     >
       <View style={{ border: 1, margin: 10, borderRadius: 8 }}>
-        <Heading date={date} />
+        <Heading logoSrc={logoSrc} date={date} />
         <PersonDetails person={sellerDetails} type="seller" />
         <PersonDetails person={buyerDetails} type="buyer" />
         <ProductDetailsTable invoice={invoice} />
