@@ -31,7 +31,13 @@ function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
   );
 }
 
-function StampAndSignature({ stampSrc }: { stampSrc: string }) {
+function StampAndSignature({
+  stampSrc,
+  isPaid,
+}: {
+  stampSrc: string;
+  isPaid: boolean;
+}) {
   return (
     <View
       style={{
@@ -51,7 +57,11 @@ function StampAndSignature({ stampSrc }: { stampSrc: string }) {
         }}
       >
         <Text>مهر و امضا فروشنده:</Text>
-        <Image source={stampSrc} style={{ width: 100 }} />
+        {isPaid ? (
+          <Image source={stampSrc} style={{ width: 100 }} />
+        ) : (
+          <View style={{ height: 100 }}></View>
+        )}
       </View>
       <View
         style={{
@@ -94,7 +104,7 @@ const InvoiceDocument = ({
         <PersonDetails person={sellerDetails} type="seller" />
         <PersonDetails person={buyerDetails} type="buyer" />
         <ProductDetailsTable invoice={invoice} />
-        <StampAndSignature stampSrc={stampSrc} />
+        <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
       </View>
     </Page>
   </Document>

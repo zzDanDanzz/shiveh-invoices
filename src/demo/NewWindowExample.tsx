@@ -2,12 +2,15 @@ import { BlobProvider } from "@react-pdf/renderer";
 import { invoice, user } from "./mock";
 import InvoiceDocument from "../shiveh-invoice";
 import { useEffect, useState } from "react";
+import stamp from "./images/stamp.jpg";
 
 function Demo() {
   const [isPriting, setIsPriting] = useState(false);
 
   const document = (
     <InvoiceDocument
+
+        stampSrc={stamp}
       logoSrc="/some-logo.png"
       sellerDetails={{
         address:

@@ -11,7 +11,7 @@ export const invoice: Invoice = {
   },
   from_date: "1402-02-12 11:48:47",
   to_date: "1402-03-12 11:48:47",
-  is_paid: false,
+  is_paid: true,
   created_at: "1402-02-12 11:48:47",
   updated_at: "1402-02-12 11:48:47",
   cost: "10333334",
