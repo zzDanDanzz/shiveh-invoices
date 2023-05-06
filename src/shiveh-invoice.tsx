@@ -4,11 +4,15 @@ import ProductDetailsTable from "./components/product-details-table";
 import { Seller, Buyer, Invoice } from "./types";
 import { e2p } from "./utils";
 
-const HEADING_CONTENT = {
-  TITLE: "صورت حساب فروش کالا و خدمات",
-};
+function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
+  const isPaid = invoice.status === "paid";
+  const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
+  const title = `${invoiceType} فروش کالا و خدمات`;
 
-function Heading({ date, logoSrc }: { date: string; logoSrc: string }) {
+  const dateType = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
+  const invoiceDate = isPaid ? invoice.updated_at : invoice.created_at;
+  const dateText = e2p(invoiceDate.split(" ")[0]).split("").reverse().join("");
+
   return (
     <View
       style={{
@@ -19,10 +23,45 @@ function Heading({ date, logoSrc }: { date: string; logoSrc: string }) {
       }}
     >
       <Image source={logoSrc} style={{ width: 64 }} />
-      <Text>{HEADING_CONTENT.TITLE}</Text>
+      <Text>{title}</Text>
       <View style={{ flexDirection: "row", gap: 10 }}>
-        <Text>{e2p(date.split(" ")[0]).split("").reverse().join("")}</Text>
-        <Text>تاریخ:</Text>
+        <Text>{`${dateType}: ${dateText}`}</Text>
+      </View>
+    </View>
+  );
+}
+
+function StampAndSignature({ stampSrc }: { stampSrc: string }) {
+  return (
+    <View
+      style={{
+        // backgroundColor: "red",
+        flexDirection: "row-reverse",
+        justifyContent: "space-between",
+        position: "relative",
+        padding: 8,
+      }}
+    >
+      <View
+        style={{
+          // backgroundColor: "blue",
+          flexDirection: "row-reverse",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        <Text>مهر و امضا فروشنده:</Text>
+        <Image source={stampSrc} style={{ width: 100 }} />
+      </View>
+      <View
+        style={{
+          // backgroundColor: "green",
+          flexDirection: "row-reverse",
+          alignItems: "center",
+          width: "50%",
+        }}
+      >
+        <Text>مهر و امضا خریدار:</Text>
       </View>
     </View>
   );
@@ -33,11 +72,13 @@ const InvoiceDocument = ({
   buyerDetails,
   invoice,
   logoSrc,
+  stampSrc,
 }: {
   sellerDetails: Seller;
   buyerDetails: Buyer;
   invoice: Invoice;
   logoSrc: string;
+  stampSrc: string;
 }) => (
   <Document>
     <Page
@@ -49,10 +90,11 @@ const InvoiceDocument = ({
       }}
     >
       <View style={{ border: 1, margin: 10, borderRadius: 8 }}>
-        <Heading logoSrc={logoSrc} date={invoice.updated_at} />
+        <Heading logoSrc={logoSrc} invoice={invoice} />
         <PersonDetails person={sellerDetails} type="seller" />
         <PersonDetails person={buyerDetails} type="buyer" />
         <ProductDetailsTable invoice={invoice} />
+        <StampAndSignature stampSrc={stampSrc} />
       </View>
     </Page>
   </Document>

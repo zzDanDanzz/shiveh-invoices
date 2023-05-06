@@ -5,6 +5,7 @@ import "./demo.css";
 import vR from "./fonts/Vazirmatn-Regular.ttf";
 import vB from "./fonts/Vazirmatn-Bold.ttf";
 import logo from "./images/some-logo.png";
+import stamp from "./images/stamp.jpg";
 
 Font.register({
   family: "Vazirmatn-Regular",
@@ -20,6 +21,7 @@ function Demo() {
   return (
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
       <InvoiceDocument
+        stampSrc={stamp}
         logoSrc={logo}
         sellerDetails={{
           address:

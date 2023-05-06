@@ -40,5 +40,8 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.2",
     "vite-plugin-dts": "^2.3.0"
+  },
+  "dependencies": {
+    "@persian-tools/persian-tools": "^3.4.1"
   }
 }

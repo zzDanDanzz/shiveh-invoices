@@ -1,5 +1,6 @@
 import { View, Svg, Line, Text } from "@react-pdf/renderer";
 import { Invoice } from "../types";
+import { numberToWords } from "@persian-tools/persian-tools";
 
 interface TDataProps extends React.PropsWithChildren {
   bold?: boolean;
@@ -73,6 +74,8 @@ function Divider() {
 }
 
 function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
+  const numInWords = numberToWords(Math.round(invoice.final_price));
+  const finalPrice = `${numInWords} تومان`;
   return (
     <View style={{ borderTop: 1, paddingTop: 8 }}>
       <Text style={{ textAlign: "center" }}>
@@ -102,6 +105,16 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
             <Divider />
           </TCol>
         ))}
+      </View>
+      <View
+        style={{
+          flexDirection: "row-reverse",
+          gap: 8,
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ fontFamily: 'Vazirmatn-Bold' }}>جمع کل:</Text>
+        <Text>{finalPrice}</Text>
       </View>
     </View>
   );
