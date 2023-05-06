@@ -79,7 +79,7 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
   return (
     <View style={{ borderTop: 1, paddingTop: 8 }}>
       <Text style={{ textAlign: "center" }}>
-        مشخصات کالا یا خدمات مورد معامله )تمامی مبالغ به ریال هستند(
+        مشخصات کالا یا خدمات مورد معامله )تمامی مبالغ به تومان هستند(
       </Text>
 
       <View
