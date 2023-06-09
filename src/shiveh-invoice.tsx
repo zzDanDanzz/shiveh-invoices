@@ -11,7 +11,10 @@ function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
 
   const dateType = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
   const invoiceDate = isPaid ? invoice.updated_at : invoice.created_at;
-  const dateText = digitsEnToFa(invoiceDate.split(" ")[0]).split("").reverse().join("");
+  const dateText = digitsEnToFa(invoiceDate.split(" ")[0])
+    .split("")
+    .reverse()
+    .join("");
 
   return (
     <View
@@ -77,6 +80,20 @@ function StampAndSignature({
   );
 }
 
+const tomanToRiyal = (n: number) => n * 10;
+const invoiceFormatter = (inv: Invoice) => ({
+  ...inv,
+  plan: {
+    ...inv.plan,
+    cost_per_month: tomanToRiyal(inv.plan.cost_per_month),
+  },
+  final_price: tomanToRiyal(inv.final_price),
+  details: {
+    ...inv.details,
+    tax: tomanToRiyal(inv.details.tax),
+  },
+});
+
 const InvoiceDocument = ({
   sellerDetails,
   buyerDetails,
@@ -89,25 +106,29 @@ const InvoiceDocument = ({
   invoice: Invoice;
   logoSrc: string;
   stampSrc: string;
-}) => (
-  <Document>
-    <Page
-      size="A4"
-      orientation="landscape"
-      style={{
-        fontFamily: "Vazirmatn-Regular",
-        fontSize: 8,
-      }}
-    >
-      <View style={{ border: 1, margin: 10, borderRadius: 8 }}>
-        <Heading logoSrc={logoSrc} invoice={invoice} />
-        <PersonDetails person={sellerDetails} type="seller" />
-        <PersonDetails person={buyerDetails} type="buyer" />
-        <ProductDetailsTable invoice={invoice} />
-        <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
-      </View>
-    </Page>
-  </Document>
-);
+}) => {
+  const formattedInvoice: Invoice = invoiceFormatter(invoice);
+
+  return (
+    <Document>
+      <Page
+        size="A4"
+        orientation="landscape"
+        style={{
+          fontFamily: "Vazirmatn-Regular",
+          fontSize: 8,
+        }}
+      >
+        <View style={{ border: 1, margin: 10,  }}>
+          <Heading logoSrc={logoSrc} invoice={formattedInvoice} />
+          <PersonDetails person={sellerDetails} type="seller" />
+          <PersonDetails person={buyerDetails} type="buyer" />
+          <ProductDetailsTable invoice={formattedInvoice} />
+          <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
+        </View>
+      </Page>
+    </Document>
+  );
+};
 
 export default InvoiceDocument;

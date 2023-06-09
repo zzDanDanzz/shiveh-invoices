@@ -16,3 +16,5 @@
 - unit = riyal
 
 - ~~persianize all numbers~~
+
+- cases that need to be checked for correct pricing: when u upgrade midst of another plan already active 

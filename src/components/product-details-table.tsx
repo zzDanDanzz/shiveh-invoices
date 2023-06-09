@@ -1,6 +1,6 @@
 import { View, Svg, Line, Text } from "@react-pdf/renderer";
 import { Invoice } from "../types";
-import { numberToWords } from "@persian-tools/persian-tools";
+import { addCommas, numberToWords } from "@persian-tools/persian-tools";
 import { digitsEnToFa } from "@persian-tools/persian-tools";
 
 interface TDataProps {
@@ -9,14 +9,62 @@ interface TDataProps {
   children: string;
 }
 
-const productTableHeadings: {
+const totalPriceRowData: {
+  widthPerc: number;
+  isNum?: boolean;
+  getValue: ((inv: Invoice) => string) | null;
+}[] = [
+  {
+    widthPerc: 7,
+    getValue() {
+      return "جمع کل:";
+    },
+  },
+  {
+    widthPerc: 38,
+    getValue(inv) {
+      const numInWords = numberToWords(Math.round(inv.final_price));
+      return `${numInWords} ریال`;
+    },
+  },
+  {
+    widthPerc: 12,
+    getValue() {
+      return " ";
+    },
+  },
+  {
+    widthPerc: 9,
+    getValue() {
+      return " ";
+    },
+  },
+  {
+    widthPerc: 9,
+    getValue() {
+      return " ";
+    },
+  },
+  {
+    widthPerc: 9,
+    getValue: (inv) => inv.details.tax.toString(),
+    isNum: true,
+  },
+  {
+    widthPerc: 16,
+    getValue: (inv) => inv.final_price.toString(),
+    isNum: true,
+  },
+];
+
+const productTableData: {
   widthPerc: number;
   title: string;
   isNum?: boolean;
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
-  { widthPerc: 2.5, title: " ", getValue: null },
   { widthPerc: 2.5, title: " ", getValue: () => "1", isNum: true },
+  { widthPerc: 2.5, title: " ", getValue: null },
   {
     widthPerc: 20,
     title: "شرح کالا یا خدمات",
@@ -57,9 +105,9 @@ const productTableHeadings: {
   },
 ];
 
-function TData({ children, bold = false, isNum = false }: TDataProps) {
+function TableData({ children, bold = false, isNum = false }: TDataProps) {
   const text = isNum
-    ? digitsEnToFa(children.split(" ")[0]).split("").reverse().join("")
+    ? digitsEnToFa(addCommas(children)).split("").reverse().join("")
     : children;
 
   return (
@@ -67,7 +115,7 @@ function TData({ children, bold = false, isNum = false }: TDataProps) {
       style={{
         height: 16,
         paddingTop: 2,
-        textAlign: 'center',
+        textAlign: "center",
         ...(bold && { fontFamily: "Vazirmatn-Bold" }),
       }}
     >
@@ -76,7 +124,7 @@ function TData({ children, bold = false, isNum = false }: TDataProps) {
   );
 }
 
-function Divider() {
+function HorizontalLine() {
   return (
     <Svg height={2} width={"100%"}>
       <Line x1={0} x2={300} y1={1} y2={1} strokeWidth={1} stroke="black" />
@@ -84,13 +132,33 @@ function Divider() {
   );
 }
 
-function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
-  const numInWords = numberToWords(Math.round(invoice.final_price));
-  const finalPrice = `${numInWords} تومان`;
+function TableColumn({
+  children,
+  width,
+  withBorderRight,
+}: {
+  width: string | number;
+  withBorderRight: boolean;
+} & React.PropsWithChildren) {
   return (
-    <View style={{ borderTop: 1, paddingTop: 8 }}>
-      <Text style={{ textAlign: "center" }}>
-        مشخصات کالا یا خدمات مورد معامله )تمامی مبالغ به تومان هستند(
+    <View
+      style={{
+        flexDirection: "column",
+        borderRight: 0,
+        width,
+        ...(withBorderRight && { borderRight: 1 }),
+      }}
+    >
+      {children}
+    </View>
+  );
+}
+
+function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
+  return (
+    <View style={{ borderTop: 1, fontSize: 6 }}>
+      <Text style={{ textAlign: "center", paddingVertical: 2 }}>
+        مشخصات کالا یا خدمات مورد معامله )تمامی مبالغ به ریال هستند(
       </Text>
 
       <View
@@ -99,38 +167,42 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
           justifyContent: "center",
         }}
       >
-        {productTableHeadings.map((heading, i) => (
-          <View
-            style={{
-              flexDirection: "column",
-              // alignItems: "flex-end",
-              borderRight: 1,
-              // position: "relative",
-              fontSize: 6,
-              ...(productTableHeadings.length - 1 === i && { borderLeft: 1 }),
-              width: `${heading.widthPerc}%`,
-            }}
-            key={heading.title}
+        {productTableData.map(({ title, getValue, widthPerc, isNum }, i) => (
+          <TableColumn
+            key={title}
+            width={`${widthPerc}%`}
+            withBorderRight={i !== 0}
           >
-            <Divider />
-            <TData bold>{heading.title}</TData>
-            <Divider />
+            <HorizontalLine />
+            <TableData bold>{title}</TableData>
+            <HorizontalLine />
             {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
             {/* @ts-ignore */}
-            <TData isNum={heading.isNum}>{heading.getValue?.(invoice) ?? " "}</TData>
-            <Divider />
-          </View>
+            <TableData isNum={isNum}>{getValue?.(invoice) ?? " "}</TableData>
+            <HorizontalLine />
+          </TableColumn>
         ))}
       </View>
+
       <View
         style={{
           flexDirection: "row-reverse",
-          gap: 8,
           justifyContent: "center",
+          borderBottom: 1,
         }}
       >
-        <Text style={{ fontFamily: "Vazirmatn-Bold" }}>جمع کل:</Text>
-        <Text>{finalPrice}</Text>
+        {totalPriceRowData.map(({ getValue, widthPerc, isNum }, i) => {
+          const value = getValue?.(invoice) ?? " ";
+          return (
+            <TableColumn
+              key={value ?? i}
+              width={`${widthPerc}%`}
+              withBorderRight={i !== 0}
+            >
+              <TableData isNum={isNum}>{value}</TableData>
+            </TableColumn>
+          );
+        })}
       </View>
     </View>
   );
