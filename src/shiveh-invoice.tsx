@@ -2,19 +2,28 @@ import { View, Page, Image, Text, Document } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
 import { Seller, Buyer, Invoice } from "./types";
-import { digitsEnToFa } from "@persian-tools/persian-tools";
+import { digitNormalizer } from "./utils";
 
 function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
-  const isPaid = invoice.status === "paid";
+  const { status, updated_at, created_at, id, invoice_number } = invoice;
+
+  const isPaid = status === "paid";
   const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
   const title = `${invoiceType} فروش کالا و خدمات`;
 
-  const dateType = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
-  const invoiceDate = isPaid ? invoice.updated_at : invoice.created_at;
-  const dateText = digitsEnToFa(invoiceDate.split(" ")[0])
-    .split("")
-    .reverse()
-    .join("");
+  const dateTitle = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
+  const invoiceDate = isPaid ? updated_at : created_at;
+  const dateValue = digitNormalizer(
+    invoiceDate.split(" ")[0].replaceAll("-", "/")
+  );
+
+  const invoiceIdTitle = "شماره سریال";
+  const invoiceIdValue = digitNormalizer(id);
+
+  const invoiceNumberTitle = "شماره فاکتور رسمی";
+  const invoiceNumberValue = invoice_number
+    ? digitNormalizer(invoice_number)
+    : null;
 
   return (
     <View
@@ -27,8 +36,39 @@ function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
     >
       <Image source={logoSrc} style={{ width: 64 }} />
       <Text>{title}</Text>
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        <Text>{`${dateType}: ${dateText}`}</Text>
+      <View style={{ flexDirection: "column", gap: 6 }}>
+        <View
+          style={{
+            flexDirection: "row-reverse",
+            gap: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          <Text>{`${dateTitle}`}</Text>
+          <Text>{`${dateValue}`}</Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row-reverse",
+            gap: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          <Text>{`${invoiceIdTitle}`}</Text>
+          <Text>{`${invoiceIdValue}`}</Text>
+        </View>
+        {invoiceNumberValue && (
+          <View
+            style={{
+              flexDirection: "row-reverse",
+              gap: 10,
+              justifyContent: "space-between",
+            }}
+          >
+            <Text>{`${invoiceNumberTitle}`}</Text>
+            <Text>{`${invoiceNumberValue}`}</Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -44,19 +84,17 @@ function StampAndSignature({
   return (
     <View
       style={{
-        // backgroundColor: "red",
         flexDirection: "row-reverse",
         justifyContent: "space-between",
         position: "relative",
-        padding: 8,
       }}
     >
       <View
         style={{
-          // backgroundColor: "blue",
           flexDirection: "row-reverse",
           alignItems: "center",
           gap: 10,
+          padding: 8,
         }}
       >
         <Text>مهر و امضا فروشنده:</Text>
@@ -68,10 +106,11 @@ function StampAndSignature({
       </View>
       <View
         style={{
-          // backgroundColor: "green",
           flexDirection: "row-reverse",
           alignItems: "center",
           width: "50%",
+          borderRight: 1,
+          padding: 8,
         }}
       >
         <Text>مهر و امضا خریدار:</Text>
@@ -119,12 +158,15 @@ const InvoiceDocument = ({
           fontSize: 8,
         }}
       >
-        <View style={{ border: 1, margin: 10,  }}>
+        <View style={{ border: 1, margin: 10 }}>
           <Heading logoSrc={logoSrc} invoice={formattedInvoice} />
           <PersonDetails person={sellerDetails} type="seller" />
           <PersonDetails person={buyerDetails} type="buyer" />
           <ProductDetailsTable invoice={formattedInvoice} />
           <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
+          <View style={{ textAlign: "right", padding: 2, borderTop: 1 }}>
+            <Text>توضیحات:</Text>
+          </View>
         </View>
       </Page>
     </Document>

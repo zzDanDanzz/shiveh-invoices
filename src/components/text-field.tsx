@@ -1,5 +1,5 @@
-import { digitsEnToFa } from "@persian-tools/persian-tools";
 import { View, Text } from "@react-pdf/renderer";
+import { digitNormalizer } from "../utils";
 
 function TextField({
   label,
@@ -18,10 +18,9 @@ function TextField({
       }}
     >
       <Text style={{ fontFamily: "Vazirmatn-Bold" }}>:{label}</Text>
-      <Text>{faNums ? digitsEnToFa(value).split("").reverse().join("") : value}</Text>
+      <Text>{faNums ? digitNormalizer(value) : value}</Text>
     </View>
   );
 }
 
-
-export default TextField
+export default TextField;

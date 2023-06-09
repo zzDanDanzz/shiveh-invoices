@@ -1,7 +1,7 @@
 import { View, Svg, Line, Text } from "@react-pdf/renderer";
 import { Invoice } from "../types";
 import { addCommas, numberToWords } from "@persian-tools/persian-tools";
-import { digitsEnToFa } from "@persian-tools/persian-tools";
+import { digitNormalizer } from "../utils";
 
 interface TDataProps {
   bold?: boolean;
@@ -68,7 +68,10 @@ const productTableData: {
   {
     widthPerc: 20,
     title: "شرح کالا یا خدمات",
-    getValue: (inv) => inv.plan.name,
+    getValue: (inv) => {
+      const isYearly = inv.details.month === "12";
+      return `${"ارائه سرویس میزبانی نقشه"} ${isYearly ? "یکساله" : "یکماهه"}`;
+    },
   },
   {
     widthPerc: 5,
@@ -106,9 +109,7 @@ const productTableData: {
 ];
 
 function TableData({ children, bold = false, isNum = false }: TDataProps) {
-  const text = isNum
-    ? digitsEnToFa(addCommas(children)).split("").reverse().join("")
-    : children;
+  const text = isNum ? digitNormalizer(addCommas(children)) : children;
 
   return (
     <Text

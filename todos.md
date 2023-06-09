@@ -8,12 +8,12 @@
     - شماره فاکتور رسمی
         - ?? 
 
-- شرح کالا
-    - always the same (yearly or monthly)
+- ~~شرح کالا~~
+    ~~- always the same (yearly or monthly)~~
 
-- make a table out of everything
+- ~~make a table out of everything~~
 
-- unit = riyal
+- ~~unit = riyal~~
 
 - ~~persianize all numbers~~
 
