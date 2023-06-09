@@ -1,67 +1,78 @@
 import { View, Svg, Line, Text } from "@react-pdf/renderer";
 import { Invoice } from "../types";
 import { numberToWords } from "@persian-tools/persian-tools";
+import { digitsEnToFa } from "@persian-tools/persian-tools";
 
-interface TDataProps extends React.PropsWithChildren {
+interface TDataProps {
   bold?: boolean;
+  isNum?: boolean;
+  children: string;
 }
 
 const productTableHeadings: {
+  widthPerc: number;
   title: string;
+  isNum?: boolean;
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
-  { title: "شرح کالا یا خدمات", getValue: (inv) => inv.plan.name },
-  { title: "تعداد /  مقدار", getValue: (inv) => inv.details.month },
+  { widthPerc: 2.5, title: " ", getValue: null },
+  { widthPerc: 2.5, title: " ", getValue: () => "1", isNum: true },
   {
+    widthPerc: 20,
+    title: "شرح کالا یا خدمات",
+    getValue: (inv) => inv.plan.name,
+  },
+  {
+    widthPerc: 5,
+    title: "تعداد /  مقدار",
+    isNum: true,
+    getValue: (inv) => inv.details.month,
+  },
+  { widthPerc: 7, title: "واحد اندازه گیری", getValue: null },
+  { widthPerc: 8, title: "مبلغ واحد", getValue: null, isNum: true },
+  {
+    widthPerc: 12,
+
+    isNum: true,
     title: "مبلغ کل",
     getValue: (inv) =>
       (
         inv["plan"]["cost_per_month"] * Number(inv["details"]["month"])
       ).toString(),
   },
-  { title: "مبلغ تخفیف", getValue: null },
-  { title: "مبلغ کل پس از تخفیف", getValue: null },
+  { widthPerc: 9, title: "مبلغ تخفیف", getValue: null, isNum: true },
+  { widthPerc: 9, title: "مبلغ کل پس از تخفیف", getValue: null, isNum: true },
   {
+    widthPerc: 9,
     title: "جمع مالیات و عوارض",
+
+    isNum: true,
     getValue: (inv) => inv.details.tax.toString(),
   },
   {
-    title: "جمع مبلغ کل بعلاوه مالیات و عوارض",
+    widthPerc: 16,
+    title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
+    isNum: true,
     getValue: (inv) => inv.final_price.toString(),
   },
 ];
 
-function TData({ children, bold = false }: TDataProps) {
-  // const style: Style = bold ? { fontFamily: "Vazirmatn-Bold" } : undefined;
+function TData({ children, bold = false, isNum = false }: TDataProps) {
+  const text = isNum
+    ? digitsEnToFa(children.split(" ")[0]).split("").reverse().join("")
+    : children;
+
   return (
     <Text
       style={{
-        paddingHorizontal: 12,
+        height: 16,
+        paddingTop: 2,
+        textAlign: 'center',
         ...(bold && { fontFamily: "Vazirmatn-Bold" }),
       }}
     >
-      {children}
+      {text}
     </Text>
-  );
-}
-
-function TCol({
-  children,
-  borderLeft,
-}: { borderLeft?: boolean } & React.PropsWithChildren) {
-  return (
-    <View
-      style={{
-        flexDirection: "column",
-        alignItems: "flex-end",
-        gap: 6,
-        borderRight: 1,
-        position: "relative",
-        ...(borderLeft && { borderLeft: 1 }),
-      }}
-    >
-      {children}
-    </View>
   );
 }
 
@@ -84,26 +95,31 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
 
       <View
         style={{
-          padding: 16,
           flexDirection: "row-reverse",
           justifyContent: "center",
         }}
       >
         {productTableHeadings.map((heading, i) => (
-          <TCol
+          <View
+            style={{
+              flexDirection: "column",
+              // alignItems: "flex-end",
+              borderRight: 1,
+              // position: "relative",
+              fontSize: 6,
+              ...(productTableHeadings.length - 1 === i && { borderLeft: 1 }),
+              width: `${heading.widthPerc}%`,
+            }}
             key={heading.title}
-            {...(productTableHeadings.length - 1 === i && {
-              borderLeft: true,
-            })}
           >
             <Divider />
             <TData bold>{heading.title}</TData>
             <Divider />
             {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
             {/* @ts-ignore */}
-            <TData>{heading.getValue?.(invoice) ?? " "}</TData>
+            <TData isNum={heading.isNum}>{heading.getValue?.(invoice) ?? " "}</TData>
             <Divider />
-          </TCol>
+          </View>
         ))}
       </View>
       <View
@@ -113,7 +129,7 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
           justifyContent: "center",
         }}
       >
-        <Text style={{ fontFamily: 'Vazirmatn-Bold' }}>جمع کل:</Text>
+        <Text style={{ fontFamily: "Vazirmatn-Bold" }}>جمع کل:</Text>
         <Text>{finalPrice}</Text>
       </View>
     </View>

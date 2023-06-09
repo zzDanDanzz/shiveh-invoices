@@ -1,5 +1,5 @@
+import { digitsEnToFa } from "@persian-tools/persian-tools";
 import { View, Text } from "@react-pdf/renderer";
-import { e2p } from "../utils";
 
 function TextField({
   label,
@@ -18,7 +18,7 @@ function TextField({
       }}
     >
       <Text style={{ fontFamily: "Vazirmatn-Bold" }}>:{label}</Text>
-      <Text>{faNums ? e2p(value).split("").reverse().join("") : value}</Text>
+      <Text>{faNums ? digitsEnToFa(value).split("").reverse().join("") : value}</Text>
     </View>
   );
 }

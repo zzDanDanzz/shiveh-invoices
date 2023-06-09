@@ -7,7 +7,7 @@ export const invoice: Invoice = {
     plan_id: 21,
     month: "1",
     tax_percent: 0.09,
-    tax: 930000.0599999999,
+    tax: 930000,
   },
   from_date: "1402-02-12 11:48:47",
   to_date: "1402-03-12 11:48:47",
@@ -19,7 +19,7 @@ export const invoice: Invoice = {
   invoice_number: null,
   cost_in_string: "10,333,334",
   status: "pending",
-  final_price: 11263334.06,
+  final_price: 11263334,
   balance: 4666666,
   plan: {
     id: 21,

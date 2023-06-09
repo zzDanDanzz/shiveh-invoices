@@ -2,7 +2,7 @@ import { View, Page, Image, Text, Document } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
 import { Seller, Buyer, Invoice } from "./types";
-import { e2p } from "./utils";
+import { digitsEnToFa } from "@persian-tools/persian-tools";
 
 function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
   const isPaid = invoice.status === "paid";
@@ -11,7 +11,7 @@ function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
 
   const dateType = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
   const invoiceDate = isPaid ? invoice.updated_at : invoice.created_at;
-  const dateText = e2p(invoiceDate.split(" ")[0]).split("").reverse().join("");
+  const dateText = digitsEnToFa(invoiceDate.split(" ")[0]).split("").reverse().join("");
 
   return (
     <View

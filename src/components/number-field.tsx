@@ -1,12 +1,12 @@
+import { digitsEnToFa } from "@persian-tools/persian-tools";
 import { View, Text } from "@react-pdf/renderer";
-import { e2p } from "../utils";
 
 function NumberField({ label, value }: { label: string; value?: number }) {
   if (!value) {
     return null;
   }
 
-  const nums = e2p(value.toString()).split("");
+  const nums = digitsEnToFa(value.toString()).split("");
 
   return (
     <View

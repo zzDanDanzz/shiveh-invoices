@@ -3,14 +3,6 @@ import NumberField from "./number-field";
 import TextField from "./text-field";
 import { Buyer, Seller } from "../types";
 
-/**
-     person.account_type
-    name = person.name;
-    nationalCode = person.national_identity;
-
-
- */
-
 function PersonDetails({
   person,
   type,
