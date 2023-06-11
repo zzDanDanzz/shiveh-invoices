@@ -164,13 +164,36 @@ const InvoiceDocument = ({
           <PersonDetails person={buyerDetails} type="buyer" />
           <ProductDetailsTable invoice={formattedInvoice} />
           <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
-          <View style={{ textAlign: "right", padding: 2, borderTop: 1 }}>
-            <Text>توضیحات:</Text>
-          </View>
+          <DescriptionRow planName={invoice.plan.name} type={invoice.type} />
         </View>
       </Page>
     </Document>
   );
 };
+
+const invoiceTypes = {
+  EXTEND_SUB: "eop",
+  INTIALIZE_SUB: "mop",
+};
+
+function DescriptionRow({
+  type,
+  planName,
+}: {
+  type: string;
+  planName: string;
+}) {
+  const isRenewal = type === invoiceTypes.EXTEND_SUB;
+  const description = `${isRenewal ? "تمدید" : "ارتقا"} به پلن ${planName}`;
+
+  return (
+    <View style={{ textAlign: "right", padding: 2, borderTop: 1 }}>
+      <View style={{ display: "flex", flexDirection: "row-reverse", gap: 6 }}>
+        <Text>توضیحات:</Text>
+        <Text>{description}</Text>
+      </View>
+    </View>
+  );
+}
 
 export default InvoiceDocument;
