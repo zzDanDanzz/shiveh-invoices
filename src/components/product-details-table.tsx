@@ -15,25 +15,19 @@ const totalPriceRowData: {
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
   {
-    widthPerc: 7,
+    widthPerc: 5,
     getValue() {
       return "جمع کل:";
     },
   },
   {
-    widthPerc: 38,
+    widthPerc: 45,
     getValue(inv) {
       const numInWords = numberToWords(Math.round(inv.final_price));
       return `${numInWords} ریال`;
     },
   },
   {
-    widthPerc: 12,
-    getValue() {
-      return " ";
-    },
-  },
-  {
     widthPerc: 9,
     getValue() {
       return " ";
@@ -41,6 +35,12 @@ const totalPriceRowData: {
   },
   {
     widthPerc: 9,
+    getValue() {
+      return " ";
+    },
+  },
+  {
+    widthPerc: 7,
     getValue() {
       return " ";
     },
@@ -67,32 +67,39 @@ const productTableData: {
   { widthPerc: 2.5, title: " ", getValue: null },
   {
     widthPerc: 20,
-    title: "شرح کالا یا خدمات",
-    getValue: (inv) => {
-      const isYearly = inv.details.month === "12";
-      return `${"ارائه سرویس میزبانی نقشه"} ${isYearly ? "یکساله" : "یکماهه"}`;
-    },
+    title: "شرح کالا",
+    getValue: () => "ارائه سرویس میزبانی نقشه",
   },
   {
     widthPerc: 5,
-    title: "تعداد /  مقدار",
+    title: "تعداد",
     isNum: true,
     getValue: (inv) => inv.details.month,
   },
-  { widthPerc: 7, title: "واحد اندازه گیری", getValue: null },
-  { widthPerc: 8, title: "مبلغ واحد", getValue: null, isNum: true },
+  {
+    widthPerc: 8,
+    title: "مبلغ واحد",
+    getValue: (inv) => inv.plan.cost_per_month.toString(),
+    isNum: true,
+  },
   {
     widthPerc: 12,
 
     isNum: true,
     title: "مبلغ کل",
-    getValue: (inv) =>
-      (
-        inv["plan"]["cost_per_month"] * Number(inv["details"]["month"])
-      ).toString(),
+    getValue: ({
+      details: { month },
+      plan: { cost_per_month, cost_per_year },
+    }) => (month === "12" ? cost_per_year.en : cost_per_month).toString(),
   },
   { widthPerc: 9, title: "مبلغ تخفیف", getValue: null, isNum: true },
   { widthPerc: 9, title: "مبلغ کل پس از تخفیف", getValue: null, isNum: true },
+  {
+    widthPerc: 7,
+    title: "بستانکاری",
+    getValue: (inv) => inv.balance.toString(),
+    isNum: true,
+  },
   {
     widthPerc: 9,
     title: "جمع مالیات و عوارض",
