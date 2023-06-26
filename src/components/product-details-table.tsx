@@ -68,7 +68,7 @@ const productTableData: {
   {
     widthPerc: 20,
     title: "شرح کالا",
-    getValue: (inv) => "ارائه سرویس میزبانی نقشه",
+    getValue: () => "ارائه سرویس میزبانی نقشه",
   },
   {
     widthPerc: 5,
