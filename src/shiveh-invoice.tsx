@@ -120,11 +120,15 @@ function StampAndSignature({
 }
 
 const tomanToRiyal = (n: number) => n * 10;
-const invoiceFormatter = (inv: Invoice) => ({
+const invoiceFormatter = (inv: Invoice): Invoice => ({
   ...inv,
   plan: {
     ...inv.plan,
     cost_per_month: tomanToRiyal(inv.plan.cost_per_month),
+    cost_per_year: {
+      ...inv.plan.cost_per_year,
+      en: tomanToRiyal(inv.plan.cost_per_year.en),
+    },
   },
   final_price: tomanToRiyal(inv.final_price),
   details: {
