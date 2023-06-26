@@ -131,6 +131,7 @@ const invoiceFormatter = (inv: Invoice): Invoice => ({
     },
   },
   final_price: tomanToRiyal(inv.final_price),
+  balance: tomanToRiyal(inv.balance),
   details: {
     ...inv.details,
     tax: tomanToRiyal(inv.details.tax),
