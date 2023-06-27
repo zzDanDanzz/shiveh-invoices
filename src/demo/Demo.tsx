@@ -25,13 +25,13 @@ function Demo() {
         logoSrc={logo}
         sellerDetails={{
           address:
-            "تهران، تهران، خیابان شهید بهشتی -  خیابان  خیابان پاکستان - کوچه شهید ساوجی نیا -  پلاک ۵",
+            "استان تهران، شهر تهران، خيابان شهید جواد سرافراز، نبش کوچه نسیم شمال (یکم)، پلاک 9، طبقه 1، واحد 1",
           account_type: "legal",
           company: "شرکت شیوه نرم افزار گستر آسیا",
           national_number: "14006138250",
           financial_code: "411558785873",
-          postalcode: "1531735614",
-          telephone: "(021)42070300",
+          postalcode: "1587613611",
+          telephone: "02142070300",
         }}
         buyerDetails={user}
         invoice={invoice}

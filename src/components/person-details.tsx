@@ -2,6 +2,17 @@ import { View, Text } from "@react-pdf/renderer";
 import NumberField from "./number-field";
 import TextField from "./text-field";
 import { Buyer, Seller } from "../types";
+import { digitsEnToFa } from "@persian-tools/persian-tools";
+
+const swapParentheses = (str: string) =>
+  str.replace(/[()]/g, (match) => (match === "(" ? ")" : "("));
+
+const reverseNums = (str: string) =>
+  str.replace(/\d+/g, (match) => match.split("").reverse().join(""));
+
+const addressNormalizer = (address: string) => {
+  return digitsEnToFa(swapParentheses(reverseNums(address)));
+};
 
 function PersonDetails({
   person,
@@ -77,7 +88,11 @@ function PersonDetails({
           />
           <TextField
             label={"نشانی"}
-            value={person.address || `${"آدرس"} موجود نیست`}
+            value={
+              person.address
+                ? addressNormalizer(person.address)
+                : `${"آدرس"} موجود نیست`
+            }
           />
           <TextField
             label={phoneNumLabel}

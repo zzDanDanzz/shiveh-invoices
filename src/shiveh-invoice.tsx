@@ -2,7 +2,7 @@ import { View, Page, Image, Text, Document } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
 import { Seller, Buyer, Invoice } from "./types";
-import { digitNormalizer } from "./utils";
+import { dateNormalizer, digitNormalizer } from "./utils";
 
 function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
   const { status, updated_at, created_at, id, invoice_number } = invoice;
@@ -12,10 +12,7 @@ function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
   const title = `${invoiceType} فروش کالا و خدمات`;
 
   const dateTitle = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
-  const invoiceDate = isPaid ? updated_at : created_at;
-  const dateValue = digitNormalizer(
-    invoiceDate.split(" ")[0].replaceAll("-", "/")
-  );
+  const dateValue = dateNormalizer(isPaid ? updated_at : created_at);
 
   const invoiceIdTitle = "شماره سریال";
   const invoiceIdValue = digitNormalizer(id);
@@ -131,6 +128,7 @@ const invoiceFormatter = (inv: Invoice): Invoice => ({
     },
   },
   final_price: tomanToRiyal(inv.final_price),
+  balance: tomanToRiyal(inv.balance),
   details: {
     ...inv.details,
     tax: tomanToRiyal(inv.details.tax),
@@ -168,7 +166,12 @@ const InvoiceDocument = ({
           <PersonDetails person={buyerDetails} type="buyer" />
           <ProductDetailsTable invoice={formattedInvoice} />
           <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
-          <DescriptionRow planName={invoice.plan.name} type={invoice.type} />
+          <DescriptionRow
+            planName={invoice.plan.name}
+            type={invoice.type}
+            fromDate={dateNormalizer(invoice.from_date)}
+            toDate={dateNormalizer(invoice.to_date)}
+          />
         </View>
       </Page>
     </Document>
@@ -183,12 +186,18 @@ const invoiceTypes = {
 function DescriptionRow({
   type,
   planName,
+  fromDate,
+  toDate,
 }: {
   type: string;
   planName: string;
+  fromDate: string;
+  toDate: string;
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  const description = `${isRenewal ? "تمدید" : "ارتقا"} به پلن ${planName}`;
+  const description = `${
+    isRenewal ? "تمدید" : "ارتقا"
+  } به پلن ${planName} از تاریخ ${fromDate} تا تاریخ ${toDate}`;
 
   return (
     <View style={{ textAlign: "right", padding: 2, borderTop: 1 }}>

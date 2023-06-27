@@ -1,6 +1,9 @@
-import { View, Svg, Line, Text } from "@react-pdf/renderer";
+import {
+  addCommas,
+  numberToWords
+} from "@persian-tools/persian-tools";
+import { Line, Svg, Text, View } from "@react-pdf/renderer";
 import { Invoice } from "../types";
-import { addCommas, numberToWords } from "@persian-tools/persian-tools";
 import { digitNormalizer } from "../utils";
 
 interface TDataProps {
@@ -72,13 +75,12 @@ const productTableData: {
   },
   {
     widthPerc: 5,
-    title: "تعداد",
-    isNum: true,
-    getValue: (inv) => inv.details.month,
+    title: "مدت",
+    getValue: (inv) => `${digitNormalizer(inv.details.month)} ماه`,
   },
   {
     widthPerc: 8,
-    title: "مبلغ واحد",
+    title: "مبلغ ماهانه",
     getValue: (inv) => inv.plan.cost_per_month.toString(),
     isNum: true,
   },
