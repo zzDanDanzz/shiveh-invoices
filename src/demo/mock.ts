@@ -1,36 +1,37 @@
 import { Buyer, Invoice } from "../types";
 
 export const invoice: Invoice = {
-  id: 1115,
-  client_id: 385,
-  details: {
-    plan_id: 25,
-    month: "12",
-    tax_percent: 0.09,
-    tax: 9504000,
-  },
-  from_date: "1402-03-22 17:16:24",
-  to_date: "1403-03-22 17:16:24",
-  is_paid: false,
-  created_at: "1402-03-22 17:16:24",
-  updated_at: "1402-03-22 17:16:24",
-  cost: "105600000",
-  type: "mop",
-  invoice_number: null,
-  cost_in_string: "105,600,000",
-  status: "pending",
-  final_price: 115104000,
-  balance: 2400000,
-  plan: {
-    id: 25,
-    name: "اختصاصی",
-    cost_per_month: 9000000,
-    request_per_day: 1000000,
-    cost_per_year: {
-      en: 108000000,
-      fa: "۱۰۸۰۰۰۰۰۰",
+    "id": 1106,
+    "client_id": 381,
+    "details": {
+      "plan_id": 22,
+      "month": "12",
+      "tax_percent": 0.09,
+      "tax": 388800
     },
-  },
+    "from_date": "1403-03-03 14:27:36",
+    "to_date": "1404-03-03 14:27:36",
+    "is_paid": false,
+    "created_at": "1402-03-21 11:13:19",
+    "updated_at": "1402-03-21 11:13:19",
+    "cost": "4320000",
+    "type": "eop",
+    "invoice_number": null,
+    "cost_in_string": "4,320,000",
+    "status": "pending",
+    "final_price": 4708800,
+    "balance": 0,
+    "plan": {
+      "id": 22,
+      "name": "استارت آپ",
+      "cost_per_month": 360000,
+      "request_per_day": 15000,
+      "cost_per_year": {
+        "en": 4320000,
+        "fa": "۴۳۲۰۰۰۰"
+      }
+    }
+
 };
 
 export const user: Buyer = {
