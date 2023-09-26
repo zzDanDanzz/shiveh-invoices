@@ -14,7 +14,7 @@ function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
   const dateTitle = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
   const dateValue = dateNormalizer(isPaid ? updated_at : created_at);
 
-  const invoiceIdTitle = "شماره سریال";
+  const invoiceIdTitle = "شناسه پرداخت";
   const invoiceIdValue = digitNormalizer(id);
 
   const invoiceNumberTitle = "شماره فاکتور رسمی";
