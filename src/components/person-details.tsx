@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import NumberField from "./number-field";
 import TextField from "./text-field";
-import { Buyer, Seller } from "../types";
+import { Buyer, Seller,Invoice } from "../types";
 import { digitsEnToFa } from "@persian-tools/persian-tools";
 
 const swapParentheses = (str: string) =>
@@ -19,15 +19,23 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     gap: 4,
     justifyContent: "center",
+    alignItems: "center",
+    width: "5%",
+    height: "60px",
+    border: "1px solid black",
+    padding: "5px",
+    backgroundColor:'#E5E7EC'
   },
 });
 
 function PersonDetails({
   person,
   type,
+  invoice
 }: {
   person: Buyer | Seller;
   type: "buyer" | "seller";
+  invoice:Invoice
 }) {
   let accountType, name, nationalCode, nationalCodeLabel, phoneNumLabel;
   const isNaturalPerson = person.account_type === "natural";
@@ -37,33 +45,45 @@ function PersonDetails({
     name = (person as Buyer).name;
     nationalCode = (person as Buyer).national_identity;
     nationalCodeLabel = "شماره ملی";
-    phoneNumLabel = "تلفن ثابت";
+    phoneNumLabel = "شماره تماس ثابت";
   } else {
     accountType = "حقوقی";
     name = person.company;
     nationalCode = person.national_number;
     nationalCodeLabel = "شماره ثبت";
-    phoneNumLabel = "تلفن ثابت / نمابر";
+    phoneNumLabel = "شماره تماس ثابت / نمابر";
   }
 
   return (
-    <View style={{ borderTop: 1, padding: 8, flexDirection: "column", gap: 8 }}>
+    <View
+      style={{
+        display: "flex",
+        padding:2,
+        flexDirection: "row-reverse",
+        gap: 3,
+      }}
+    >
+      {/* rotate title */}
       <View style={styles.title}>
-        <Text>{"مشخصات"}</Text>
-        <Text>{type === "buyer" ? "خریدار" : "فروشنده"}</Text>
+        <Text style={{ transform: "rotate(-90deg)"}}>
+          {type === "buyer" ? "خریدار" : "فروشنده"}
+        </Text>
       </View>
+      {/* details */}
       <View
         style={{
           flexDirection: "column",
-          gap: 6,
+          border: 1,
+          width: "80%",
+          padding: "5px",
+          gap: 3,
         }}
       >
         {/* نام، شماره اقتصادی و ملی */}
-        <View style={{ flexDirection: "row-reverse", gap: 8 }}>
+        <View style={{ flexDirection: "row-reverse", gap: 40 }}>
           <TextField
             label={`نام شخص ${accountType}`}
             value={name || `${"نام"} موجود نیست`}
-            style={{ flexGrow: 1 }}
           />
           {!isNaturalPerson && (
             <NumberField
@@ -73,30 +93,36 @@ function PersonDetails({
           )}
           <NumberField label={nationalCodeLabel} value={Number(nationalCode)} />
         </View>
-        {/* ناشنی و کد پستی  */}
-        <View style={{ flexDirection: "row-reverse" }}>
+        {/*  شماره تماس و کد پستی  */}
+        <View style={{ flexDirection: "row-reverse", gap:40 }}>
           <TextField
-            label={"نشانی"}
-            value={
-              person.address
-                ? addressNormalizer(person.address)
-                : `${"آدرس"} موجود نیست`
-            }
-            style={{ flexGrow: 1 }}
+            label={phoneNumLabel}
+            value={person.telephone || `${phoneNumLabel} موجود نیست`}
+            faNums
           />
           <NumberField
             label={"کد پستی"}
             value={person.postalcode || `${"کد پستی"} موجود نیست`}
           />
         </View>
-        {/* شماره تلفن */}
+        {/*نشانی*/}
         <TextField
-          label={phoneNumLabel}
-          value={person.telephone || `${phoneNumLabel} موجود نیست`}
-          faNums
+          label={"نشانی"}
+          value={
+            person.address
+              ? addressNormalizer(person.address)
+              : `${"آدرس"} موجود نیست`
+          }
+          style={{ flexGrow: 1 }}
         />
       </View>
+      <View>
+      </View>
+<View>
+  
+</View>
     </View>
+
   );
 }
 

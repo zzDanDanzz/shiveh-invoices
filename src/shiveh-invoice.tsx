@@ -6,7 +6,7 @@ import { dateNormalizer, digitNormalizer } from "./utils";
 
 function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
   const { status, updated_at, created_at, id, invoice_number } = invoice;
-
+  
   const isPaid = status === "paid";
   const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
   const title = `${invoiceType} فروش کالا و خدمات`;
@@ -158,21 +158,20 @@ const InvoiceDocument = ({
         style={{
           fontFamily: "Vazirmatn-Regular",
           fontSize: 8,
+          padding:'15px 40px 20px 40px'
         }}
       >
-        <View style={{ border: 1, margin: 10 }}>
-          <Heading logoSrc={logoSrc} invoice={formattedInvoice} />
-          <PersonDetails person={sellerDetails} type="seller" />
-          <PersonDetails person={buyerDetails} type="buyer" />
-          <ProductDetailsTable invoice={formattedInvoice} />
-          <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
-          <DescriptionRow
-            planName={invoice.plan.name}
-            type={invoice.type}
-            fromDate={dateNormalizer(invoice.from_date)}
-            toDate={dateNormalizer(invoice.to_date)}
-          />
-        </View>
+        {/* <Heading logoSrc={logoSrc} invoice={formattedInvoice} /> */}
+        <PersonDetails person={sellerDetails} invoice={formattedInvoice} type="seller" />
+        <PersonDetails person={buyerDetails} invoice={formattedInvoice} type="buyer" />
+        <ProductDetailsTable invoice={formattedInvoice}  />
+        <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
+        <DescriptionRow
+          planName={invoice.plan.name}
+          type={invoice.type}
+          fromDate={dateNormalizer(invoice.from_date)}
+          toDate={dateNormalizer(invoice.to_date)}
+        />
       </Page>
     </Document>
   );

@@ -12,16 +12,13 @@ function NumberField({ label, value }: { label: string; value?: number }) {
     <View
       style={{
         flexDirection: "row-reverse",
-        gap: 8,
+        gap:5
       }}
     >
       <Text style={{ fontFamily: "Vazirmatn-Bold" }}>:{label}</Text>
-
       <View style={{ flexDirection: "row" }}>
         {nums.map((n, i) => (
-          <View style={{ border: 1, textAlign: "center" }} key={i}>
-            <Text style={{ width: 12 }}>{n}</Text>
-          </View>
+          <Text key={i}>{n}</Text>
         ))}
       </View>
     </View>
