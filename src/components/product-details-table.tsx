@@ -1,7 +1,4 @@
-import {
-  addCommas,
-  numberToWords
-} from "@persian-tools/persian-tools";
+import { addCommas, numberToWords } from "@persian-tools/persian-tools";
 import { Line, Svg, Text, View } from "@react-pdf/renderer";
 import { Invoice } from "../types";
 import { digitNormalizer } from "../utils";
@@ -64,10 +61,10 @@ const productTableData: {
   widthPerc: number;
   title: string;
   isNum?: boolean;
+  backgroundColor?:string,
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
-  { widthPerc: 2.5, title: " ", getValue: () => "1", isNum: true },
-  { widthPerc: 2.5, title: " ", getValue: null },
+  { widthPerc: 5, title: "ردیف", getValue: () => "1", isNum: true },
   {
     widthPerc: 20,
     title: "شرح کالا",
@@ -121,16 +118,20 @@ function TableData({ children, bold = false, isNum = false }: TDataProps) {
   const text = isNum ? digitNormalizer(addCommas(children)) : children;
 
   return (
-    <Text
-      style={{
-        height: 16,
-        paddingTop: 2,
-        textAlign: "center",
-        ...(bold && { fontFamily: "Vazirmatn-Bold" }),
-      }}
-    >
-      {text}
-    </Text>
+    <View style={{padding:8,backgroundColor: bold ? '#E5E7EC':undefined}}>
+  
+        <Text
+          style={{
+            height: 16,
+            paddingTop: 2,
+            textAlign: "center",
+             ...(bold && { fontFamily: "Vazirmatn-Bold" }),
+          }}
+        >
+          {text}
+        </Text>
+      
+    </View>
   );
 }
 
@@ -166,12 +167,9 @@ function TableColumn({
 
 function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
   return (
-    <View style={{ borderTop: 1, fontSize: 6 }}>
-      <Text style={{ textAlign: "center", paddingVertical: 2 }}>
-        مشخصات کالا یا خدمات مورد معامله )تمامی مبالغ به ریال هستند(
-      </Text>
-
+    <View style={{ fontSize: 6, borderLeft: 1, borderRight: 1 }}>
       <View
+      
         style={{
           flexDirection: "row-reverse",
           justifyContent: "center",

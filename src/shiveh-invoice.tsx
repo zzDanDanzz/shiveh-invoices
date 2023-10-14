@@ -1,12 +1,34 @@
-import { View, Page, Image, Text, Document } from "@react-pdf/renderer";
+import {
+  View,
+  Page,
+  Image,
+  Text,
+  Document,
+  StyleSheet,
+} from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
 import { Seller, Buyer, Invoice } from "./types";
 import { dateNormalizer, digitNormalizer } from "./utils";
+import TextField from "./components/text-field";
+const styles = StyleSheet.create({
+  title: {
+    display: "flex",
+    flexDirection: "row-reverse",
+    gap: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "5%",
+    height: "60px",
+    border: "1px solid black",
+    padding: "5px",
+    backgroundColor: "#E5E7EC",
+  },
+});
 
-function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
+function Heading({ invoice}: { invoice: Invoice}) {
   const { status, updated_at, created_at, id, invoice_number } = invoice;
-  
+
   const isPaid = status === "paid";
   const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
   const title = `${invoiceType} فروش کالا و خدمات`;
@@ -31,8 +53,7 @@ function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
         padding: 8,
       }}
     >
-      <Image source={logoSrc} style={{ width: 64 }} />
-      <Text>{title}</Text>
+
       <View style={{ flexDirection: "column", gap: 6 }}>
         <View
           style={{
@@ -84,14 +105,17 @@ function StampAndSignature({
         flexDirection: "row-reverse",
         justifyContent: "space-between",
         position: "relative",
+        border: 1,
+        marginVertical: 4,
+        height: 100,
       }}
     >
       <View
         style={{
           flexDirection: "row-reverse",
-          alignItems: "center",
           gap: 10,
           padding: 8,
+          width: "50%",
         }}
       >
         <Text>مهر و امضا فروشنده:</Text>
@@ -104,9 +128,8 @@ function StampAndSignature({
       <View
         style={{
           flexDirection: "row-reverse",
-          alignItems: "center",
-          width: "50%",
           borderRight: 1,
+          width: "50%",
           padding: 8,
         }}
       >
@@ -158,19 +181,28 @@ const InvoiceDocument = ({
         style={{
           fontFamily: "Vazirmatn-Regular",
           fontSize: 8,
-          padding:'15px 40px 20px 40px'
+          padding: "15px 40px 20px 40px",
         }}
       >
         {/* <Heading logoSrc={logoSrc} invoice={formattedInvoice} /> */}
-        <PersonDetails person={sellerDetails} invoice={formattedInvoice} type="seller" />
-        <PersonDetails person={buyerDetails} invoice={formattedInvoice} type="buyer" />
-        <ProductDetailsTable invoice={formattedInvoice}  />
+        <PersonDetails
+          person={sellerDetails}
+          type="seller"
+        />
+        <PersonDetails
+          person={buyerDetails}
+          type="buyer"
+        />
+        <ProductDetailsTable invoice={formattedInvoice} />
         <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
         <DescriptionRow
           planName={invoice.plan.name}
           type={invoice.type}
           fromDate={dateNormalizer(invoice.from_date)}
           toDate={dateNormalizer(invoice.to_date)}
+          shaibaNumber={sellerDetails.shaiba_number}
+          accountNumber={sellerDetails.account_number}
+          bankBranch={sellerDetails.bank_branch}
         />
       </Page>
     </Document>
@@ -187,22 +219,65 @@ function DescriptionRow({
   planName,
   fromDate,
   toDate,
+  shaibaNumber,
+  accountNumber,
+  bankBranch,
 }: {
   type: string;
   planName: string;
   fromDate: string;
   toDate: string;
+  shaibaNumber: string;
+  accountNumber: string;
+  bankBranch: string;
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  const description = `${
+  const description = 
+  `${
     isRenewal ? "تمدید" : "ارتقا"
-  } به پلن ${planName} از تاریخ ${fromDate} تا تاریخ ${toDate}`;
-
+  } به پلن ${planName}`;
+  const date = `از ${fromDate} تا ${toDate}`;
   return (
-    <View style={{ textAlign: "right", padding: 2, borderTop: 1 }}>
-      <View style={{ display: "flex", flexDirection: "row-reverse", gap: 6 }}>
-        <Text>توضیحات:</Text>
-        <Text>{description}</Text>
+    <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+      <View style={styles.title}>
+        <Text style={{ transform: "rotate(-90deg)" }}>توضیحات</Text>
+      </View>
+      <View
+        style={{
+          textAlign: "right",
+          padding: 7,
+          border: 1,
+          marginRight: 3,
+          width: "100%",
+          gap: 15,
+        }}
+      >
+        <View
+          style={{ display: "flex", flexDirection: "row-reverse", gap: 20 }}
+        >
+          <View
+            style={{ display: "flex", flexDirection: "row-reverse", gap: 4 }}
+          >
+            <TextField label={"شماره شبا "} value={shaibaNumber} />
+          </View>
+          <View
+            style={{ display: "flex", flexDirection: "row-reverse", gap: 4 }}
+          >
+            <TextField label={"شماره حساب "} value={accountNumber} />
+          </View>
+          <Text style={{ fontFamily: "Vazirmatn-Bold" }}>{bankBranch}</Text>
+        </View>
+        <View
+          style={{ display: "flex", flexDirection: "row-reverse",gap:55 }}
+        >
+          <TextField label="نوع پلن" value={description}/>
+          <TextField label="تاریخ" value={date} />
+          <View style={{flexDirection:'row-reverse',gap:1,fontFamily:'Vazirmatn-Bold'}}>
+            <Text>*</Text>
+            <Text>تمام قیمت ها به ریال است.</Text>
+          </View>
+          
+        </View>
       </View>
     </View>
   );

@@ -7,7 +7,11 @@ export type Seller = Pick<
   | "financial_code"
   | "postalcode"
   | "telephone"
->;
+> & {
+  shaiba_number: string;
+  account_number: string;
+  bank_branch: string;
+};
 
 export type Buyer = Pick<
   User,

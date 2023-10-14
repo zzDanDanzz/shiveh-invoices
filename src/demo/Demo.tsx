@@ -6,6 +6,7 @@ import vR from "./fonts/Vazirmatn-Regular.ttf";
 import vB from "./fonts/Vazirmatn-Bold.ttf";
 import logo from "./images/some-logo.png";
 import stamp from "./images/stamp.jpg";
+import { digitNormalizer } from "../utils";
 
 Font.register({
   family: "Vazirmatn-Regular",
@@ -32,6 +33,9 @@ function Demo() {
           financial_code: "411558785873",
           postalcode: "1587613611",
           telephone: "02142070300",
+          shaiba_number:`IR${digitNormalizer('۸۸۰۵۵۰۰۱۸۸۰۰۲۰۶۱۵۶۵۷۸۰۰۱')}`,
+          account_number:digitNormalizer('۱۸۸-۲-۶۱۵۶۵۷۸-۱'),
+          bank_branch:'شرکت شیوه نرم‌افزار گستر آسیا - بانک اقتصاد نوین شعبه هفتم تیر '
         }}
         buyerDetails={user}
         invoice={invoice}

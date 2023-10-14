@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
 function PersonDetails({
   person,
   type,
-  invoice
+
 }: {
   person: Buyer | Seller;
   type: "buyer" | "seller";
-  invoice:Invoice
+  
 }) {
   let accountType, name, nationalCode, nationalCodeLabel, phoneNumLabel;
   const isNaturalPerson = person.account_type === "natural";
@@ -58,7 +58,7 @@ function PersonDetails({
     <View
       style={{
         display: "flex",
-        padding:2,
+        marginBottom:3,
         flexDirection: "row-reverse",
         gap: 3,
       }}
@@ -74,7 +74,7 @@ function PersonDetails({
         style={{
           flexDirection: "column",
           border: 1,
-          width: "80%",
+          width: "78%",
           padding: "5px",
           gap: 3,
         }}
