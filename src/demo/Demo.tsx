@@ -23,7 +23,6 @@ function Demo() {
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
       <InvoiceDocument
         stampSrc={stamp}
-        logoSrc={logo}
         sellerDetails={{
           address:
             "استان تهران، شهر تهران، عباس آباد، خیابان بهشتی، خيابان شهید جواد سرافراز، نبش کوچه‌ی نسیم شمال (یکم)، پلاک 9، طبقه 1، واحد 1",
@@ -33,9 +32,10 @@ function Demo() {
           financial_code: "411558785873",
           postalcode: "1587613611",
           telephone: "02142070300",
-          shaiba_number:`IR${digitNormalizer('۸۸۰۵۵۰۰۱۸۸۰۰۲۰۶۱۵۶۵۷۸۰۰۱')}`,
-          account_number:digitNormalizer('۱۸۸-۲-۶۱۵۶۵۷۸-۱'),
-          bank_branch:'شرکت شیوه نرم‌افزار گستر آسیا - بانک اقتصاد نوین شعبه هفتم تیر '
+          shaiba_number: `IR${digitNormalizer("۸۸۰۵۵۰۰۱۸۸۰۰۲۰۶۱۵۶۵۷۸۰۰۱")}`,
+          account_number: digitNormalizer("۱۸۸-۲-۶۱۵۶۵۷۸-۱"),
+          bank_branch:
+            "شرکت شیوه نرم‌افزار گستر آسیا - بانک اقتصاد نوین شعبه هفتم تیر ",
         }}
         buyerDetails={user}
         invoice={invoice}

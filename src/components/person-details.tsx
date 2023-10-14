@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import NumberField from "./number-field";
 import TextField from "./text-field";
-import { Buyer, Seller,Invoice } from "../types";
+import { Buyer, Seller } from "../types";
 import { digitsEnToFa } from "@persian-tools/persian-tools";
 
 const swapParentheses = (str: string) =>
@@ -24,18 +24,16 @@ const styles = StyleSheet.create({
     height: "60px",
     border: "1px solid black",
     padding: "5px",
-    backgroundColor:'#E5E7EC'
+    backgroundColor: "#E5E7EC",
   },
 });
 
 function PersonDetails({
   person,
   type,
-
 }: {
   person: Buyer | Seller;
   type: "buyer" | "seller";
-  
 }) {
   let accountType, name, nationalCode, nationalCodeLabel, phoneNumLabel;
   const isNaturalPerson = person.account_type === "natural";
@@ -58,14 +56,14 @@ function PersonDetails({
     <View
       style={{
         display: "flex",
-        marginBottom:3,
+        marginBottom: 3,
         flexDirection: "row-reverse",
         gap: 3,
       }}
     >
       {/* rotate title */}
       <View style={styles.title}>
-        <Text style={{ transform: "rotate(-90deg)"}}>
+        <Text style={{ transform: "rotate(-90deg)" }}>
           {type === "buyer" ? "خریدار" : "فروشنده"}
         </Text>
       </View>
@@ -74,7 +72,7 @@ function PersonDetails({
         style={{
           flexDirection: "column",
           border: 1,
-          width: "78%",
+          width: "92%",
           padding: "5px",
           gap: 3,
         }}
@@ -94,7 +92,7 @@ function PersonDetails({
           <NumberField label={nationalCodeLabel} value={Number(nationalCode)} />
         </View>
         {/*  شماره تماس و کد پستی  */}
-        <View style={{ flexDirection: "row-reverse", gap:40 }}>
+        <View style={{ flexDirection: "row-reverse", gap: 40 }}>
           <TextField
             label={phoneNumLabel}
             value={person.telephone || `${phoneNumLabel} موجود نیست`}
@@ -116,13 +114,9 @@ function PersonDetails({
           style={{ flexGrow: 1 }}
         />
       </View>
-      <View>
-      </View>
-<View>
-  
-</View>
+      <View></View>
+      <View></View>
     </View>
-
   );
 }
 

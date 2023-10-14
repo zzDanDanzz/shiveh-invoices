@@ -11,9 +11,9 @@ import ProductDetailsTable from "./components/product-details-table";
 import { Seller, Buyer, Invoice } from "./types";
 import { dateNormalizer, digitNormalizer } from "./utils";
 import TextField from "./components/text-field";
+import MapLogo from "./components/MapLogo";
 const styles = StyleSheet.create({
   title: {
-    display: "flex",
     flexDirection: "row-reverse",
     gap: 4,
     justifyContent: "center",
@@ -25,69 +25,100 @@ const styles = StyleSheet.create({
     backgroundColor: "#E5E7EC",
   },
 });
-
-function Heading({ invoice}: { invoice: Invoice}) {
+function InvoiceInfo({ invoice }: { invoice: Invoice }) {
   const { status, updated_at, created_at, id, invoice_number } = invoice;
-
   const isPaid = status === "paid";
-  const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
-  const title = `${invoiceType} فروش کالا و خدمات`;
-
-  const dateTitle = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
+  const dateTitle = isPaid ? "تاریخ پرداخت :" : "تاریخ :";
   const dateValue = dateNormalizer(isPaid ? updated_at : created_at);
 
-  const invoiceIdTitle = "شناسه پرداخت";
+  const invoiceIdTitle = "شناسه پرداخت :";
   const invoiceIdValue = digitNormalizer(id);
 
   const invoiceNumberTitle = "شماره فاکتور رسمی";
   const invoiceNumberValue = invoice_number
     ? digitNormalizer(invoice_number)
-    : null;
-
+    : "-";
   return (
     <View
       style={{
         flexDirection: "row-reverse",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: 8,
       }}
     >
-
-      <View style={{ flexDirection: "column", gap: 6 }}>
-        <View
-          style={{
-            flexDirection: "row-reverse",
-            gap: 10,
-            justifyContent: "space-between",
-          }}
-        >
-          <Text>{`${dateTitle}`}</Text>
-          <Text>{`${dateValue}`}</Text>
+      <View style={{ flexDirection: "column", gap: 3 }}>
+        <View>
+          {invoiceNumberValue && (
+            <View
+              style={{
+                flexDirection: "column",
+                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "118px",
+                height: "60px",
+                border: 1,
+              }}
+            >
+              <Text
+                style={{ fontFamily: "Vazirmatn-Bold" }}
+              >{`${invoiceNumberTitle}`}</Text>
+              <Text>{`${invoiceNumberValue}`}</Text>
+            </View>
+          )}
         </View>
         <View
           style={{
-            flexDirection: "row-reverse",
+            flexDirection: "column",
+            width: "118px",
+            height: "60px",
+            border: 1,
             gap: 10,
-            justifyContent: "space-between",
+            padding: 10,
           }}
         >
-          <Text>{`${invoiceIdTitle}`}</Text>
-          <Text>{`${invoiceIdValue}`}</Text>
-        </View>
-        {invoiceNumberValue && (
           <View
             style={{
               flexDirection: "row-reverse",
-              gap: 10,
               justifyContent: "space-between",
             }}
           >
-            <Text>{`${invoiceNumberTitle}`}</Text>
-            <Text>{`${invoiceNumberValue}`}</Text>
+            <Text>{`${dateTitle}`}</Text>
+            <Text>{`${dateValue}`}</Text>
           </View>
-        )}
+          <View
+            style={{
+              flexDirection: "row-reverse",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text>{`${invoiceIdTitle}`}</Text>
+            <Text>{`${invoiceIdValue}`}</Text>
+          </View>
+        </View>
       </View>
+    </View>
+  );
+}
+function Heading({ invoice }: { invoice: Invoice }) {
+  const { status } = invoice;
+  const isPaid = status === "paid";
+  const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
+  const title = `${invoiceType} فروش کالا و خدمات`;
+
+  return (
+    <View
+      style={{
+        flexDirection: "row-reverse",
+        alignItems: "center",
+        gap: 208,
+        paddingBottom: 5,
+      }}
+    >
+      <MapLogo />
+      <Text style={{ fontFamily: "Vazirmatn-Bold", fontSize: 12 }}>
+        {title}
+      </Text>
     </View>
   );
 }
@@ -162,13 +193,11 @@ const InvoiceDocument = ({
   sellerDetails,
   buyerDetails,
   invoice,
-  logoSrc,
   stampSrc,
 }: {
   sellerDetails: Seller;
   buyerDetails: Buyer;
   invoice: Invoice;
-  logoSrc: string;
   stampSrc: string;
 }) => {
   const formattedInvoice: Invoice = invoiceFormatter(invoice);
@@ -184,15 +213,16 @@ const InvoiceDocument = ({
           padding: "15px 40px 20px 40px",
         }}
       >
-        {/* <Heading logoSrc={logoSrc} invoice={formattedInvoice} /> */}
-        <PersonDetails
-          person={sellerDetails}
-          type="seller"
-        />
-        <PersonDetails
-          person={buyerDetails}
-          type="buyer"
-        />
+        <Heading invoice={formattedInvoice} />
+        <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+          <View>
+            <PersonDetails person={sellerDetails} type="seller" />
+            <PersonDetails person={buyerDetails} type="buyer" />
+          </View>
+          <View>
+            <InvoiceInfo invoice={formattedInvoice} />
+          </View>
+        </View>
         <ProductDetailsTable invoice={formattedInvoice} />
         <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
         <DescriptionRow
@@ -232,10 +262,7 @@ function DescriptionRow({
   bankBranch: string;
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  const description = 
-  `${
-    isRenewal ? "تمدید" : "ارتقا"
-  } به پلن ${planName}`;
+  const description = `${isRenewal ? "تمدید" : "ارتقا"} به پلن ${planName}`;
   const date = `از ${fromDate} تا ${toDate}`;
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
@@ -268,15 +295,20 @@ function DescriptionRow({
           <Text style={{ fontFamily: "Vazirmatn-Bold" }}>{bankBranch}</Text>
         </View>
         <View
-          style={{ display: "flex", flexDirection: "row-reverse",gap:55 }}
+          style={{ display: "flex", flexDirection: "row-reverse", gap: 55 }}
         >
-          <TextField label="نوع پلن" value={description}/>
+          <TextField label="نوع پلن" value={description} />
           <TextField label="تاریخ" value={date} />
-          <View style={{flexDirection:'row-reverse',gap:1,fontFamily:'Vazirmatn-Bold'}}>
+          <View
+            style={{
+              flexDirection: "row-reverse",
+              gap: 1,
+              fontFamily: "Vazirmatn-Bold",
+            }}
+          >
             <Text>*</Text>
             <Text>تمام قیمت ها به ریال است.</Text>
           </View>
-          
         </View>
       </View>
     </View>
