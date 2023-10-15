@@ -114,8 +114,6 @@ function PersonDetails({
           style={{ flexGrow: 1 }}
         />
       </View>
-      <View></View>
-      <View></View>
     </View>
   );
 }

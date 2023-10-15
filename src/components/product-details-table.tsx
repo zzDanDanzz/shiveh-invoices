@@ -61,7 +61,6 @@ const productTableData: {
   widthPerc: number;
   title: string;
   isNum?: boolean;
-  backgroundColor?:string,
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
   { widthPerc: 5, title: "ردیف", getValue: () => "1", isNum: true },
@@ -119,7 +118,6 @@ function TableData({ children, bold = false, isNum = false }: TDataProps) {
 
   return (
     <View style={{padding:8,backgroundColor: bold ? '#E5E7EC':undefined}}>
-  
         <Text
           style={{
             height: 16,

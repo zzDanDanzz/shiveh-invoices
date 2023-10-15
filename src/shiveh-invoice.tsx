@@ -34,10 +34,10 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
   const invoiceIdTitle = "شناسه پرداخت :";
   const invoiceIdValue = digitNormalizer(id);
 
-  const invoiceNumberTitle = "شماره فاکتور رسمی";
+  const invoiceNumberTitle = "شماره فاکتور رسمی : ";
   const invoiceNumberValue = invoice_number
     ? digitNormalizer(invoice_number)
-    : "-";
+    : '-';
   return (
     <View
       style={{
@@ -63,7 +63,9 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
               <Text
                 style={{ fontFamily: "Vazirmatn-Bold" }}
               >{`${invoiceNumberTitle}`}</Text>
-              <Text>{`${invoiceNumberValue}`}</Text>
+              <Text
+                style={{ fontFamily: "Vazirmatn-Bold",fontSize:11 }}
+              >{`${invoiceNumberValue}`}</Text>
             </View>
           )}
         </View>
@@ -83,8 +85,8 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
               justifyContent: "space-between",
             }}
           >
-            <Text>{`${dateTitle}`}</Text>
-            <Text>{`${dateValue}`}</Text>
+            <Text >{`${dateTitle}`}</Text>
+            <Text >{`${dateValue}`}</Text>
           </View>
           <View
             style={{
@@ -92,6 +94,7 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
               justifyContent: "space-between",
             }}
           >
+         
             <Text>{`${invoiceIdTitle}`}</Text>
             <Text>{`${invoiceIdValue}`}</Text>
           </View>
