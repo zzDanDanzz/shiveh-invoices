@@ -43,7 +43,7 @@ const productTableData: {
 }[] = [
   { widthPerc: 7, title: "ردیف", getValue: () => "1", isNum: true },
   {
-    widthPerc: 24,
+    widthPerc: 20,
     title: "شرح کالا",
     getValue: () => "ارائه سرویس میزبانی نقشه",
   },
@@ -69,7 +69,7 @@ const productTableData: {
     }) => (month === "12" ? cost_per_year.en : cost_per_month).toString(),
   },
   { widthPerc: 8, title: "مبلغ تخفیف", getValue: null, isNum: true },
-  { widthPerc: 9, title: "مبلغ کل پس از تخفیف", getValue: null, isNum: true },
+  { widthPerc: 13, title: "مبلغ کل پس از تخفیف", getValue: null, isNum: true },
   {
     widthPerc: 10,
     title: "جمع مالیات و عوارض",

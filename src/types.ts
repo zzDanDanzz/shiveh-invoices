@@ -25,7 +25,30 @@ export type Buyer = Pick<
   | "postalcode"
   | "telephone"
 >;
-
+export interface CurrentPlan {
+  id: number;
+  plan_id: number;
+  from_date: string;
+  to_date: string;
+  expence: number;
+  is_paid: boolean;
+  client_id: number;
+  created_at: string;
+  updated_at: string;
+  plan: Plan;
+}
+export interface History {
+  id: number;
+  plan_id: number;
+  from_date: string;
+  to_date: string;
+  expence: number;
+  is_paid: boolean;
+  client_id: number;
+  created_at: string;
+  updated_at: string;
+  plan: Plan;
+}
 export interface Invoice {
   id: number;
   client_id: number;

@@ -8,10 +8,11 @@ import {
 } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
-import { Seller, Buyer, Invoice } from "./types";
+import { Seller, Buyer, Invoice} from "./types";
 import { dateNormalizer, digitNormalizer } from "./utils";
 import TextField from "./components/text-field";
 import MapLogo from "./components/MapLogo";
+import { invoice,history } from "./demo/mock";
 const styles = StyleSheet.create({
   title: {
     flexDirection: "row-reverse",
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "5%",
-    height: "60px",
+    height: "85px",
     border: "1px solid black",
     padding: "5px",
     backgroundColor: "#E5E7EC",
@@ -230,6 +231,7 @@ const InvoiceDocument = ({
         <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
         <DescriptionRow
           planName={invoice.plan.name}
+          previousPlan={history.plan.name}
           type={invoice.type}
           fromDate={dateNormalizer(invoice.from_date)}
           toDate={dateNormalizer(invoice.to_date)}
@@ -250,6 +252,7 @@ const invoiceTypes = {
 function DescriptionRow({
   type,
   planName,
+  previousPlan,
   fromDate,
   toDate,
   shaibaNumber,
@@ -258,14 +261,26 @@ function DescriptionRow({
 }: {
   type: string;
   planName: string;
+  previousPlan:string,
   fromDate: string;
   toDate: string;
   shaibaNumber: string;
   accountNumber: string;
   bankBranch: string;
+
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  const description = `${isRenewal ? "تمدید" : "ارتقا"} به پلن ${planName}`;
+  console.log('isRenewal',isRenewal)
+  console.log('planid',invoice.plan.id)
+ // const description = `${isRenewal ? "تمدید" : "ارتقا"} به پلن ${planName}`;
+// const description = `${ isRenewal ? 'ارتقا':'تمدید'} از ${previousPlan} به ${planName}`
+const description =()=>{
+  if(isRenewal){
+    return `ارتقا از ${previousPlan} به ${planName}`
+  }else{
+    return `تمدید پلن ${planName}`
+  }
+}
   const date = `از ${fromDate} تا ${toDate}`;
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
@@ -300,7 +315,7 @@ function DescriptionRow({
         <View
           style={{ display: "flex", flexDirection: "row-reverse", gap: 55 }}
         >
-          <TextField label="نوع پلن" value={description} />
+          <TextField label="نوع پلن" value={description()} />
           <TextField label="تاریخ" value={date} />
           <View
             style={{
@@ -312,6 +327,10 @@ function DescriptionRow({
             <Text>*</Text>
             <Text>تمام قیمت ها به ریال است.</Text>
           </View>
+        </View>
+        <View style={{display:'flex',flexDirection:'row-reverse'}}>
+          <Text>*</Text>
+          <Text> مانده از پلن قبلی، ۲۰ روز معادل ۲۴,۰۰۰,۰۰۰ ریال می‌باشد.</Text>
         </View>
       </View>
     </View>
