@@ -1,72 +1,128 @@
-import { View, Page, Image, Text, Document } from "@react-pdf/renderer";
+import {
+  View,
+  Page,
+  Image,
+  Text,
+  Document,
+  StyleSheet,
+} from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 import ProductDetailsTable from "./components/product-details-table";
-import { Seller, Buyer, Invoice } from "./types";
+import { Seller, Buyer, Invoice} from "./types";
 import { dateNormalizer, digitNormalizer } from "./utils";
-
-function Heading({ invoice, logoSrc }: { invoice: Invoice; logoSrc: string }) {
+import TextField from "./components/text-field";
+import MapLogo from "./components/MapLogo";
+import { invoice,history } from "./demo/mock";
+const styles = StyleSheet.create({
+  title: {
+    flexDirection: "row-reverse",
+    gap: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "5%",
+    height: "85px",
+    border: "1px solid black",
+    padding: "5px",
+    backgroundColor: "#E5E7EC",
+  },
+});
+function InvoiceInfo({ invoice }: { invoice: Invoice }) {
   const { status, updated_at, created_at, id, invoice_number } = invoice;
-
   const isPaid = status === "paid";
-  const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
-  const title = `${invoiceType} فروش کالا و خدمات`;
-
-  const dateTitle = isPaid ? "تاریخ پرداخت" : "تاریخ صدور";
+  const dateTitle = isPaid ? "تاریخ پرداخت :" : "تاریخ :";
   const dateValue = dateNormalizer(isPaid ? updated_at : created_at);
 
-  const invoiceIdTitle = "شناسه پرداخت";
+  const invoiceIdTitle = "شناسه پرداخت :";
   const invoiceIdValue = digitNormalizer(id);
 
-  const invoiceNumberTitle = "شماره فاکتور رسمی";
+  const invoiceNumberTitle = "شماره فاکتور رسمی : ";
   const invoiceNumberValue = invoice_number
     ? digitNormalizer(invoice_number)
-    : null;
-
+    : '-';
   return (
     <View
       style={{
         flexDirection: "row-reverse",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: 8,
       }}
     >
-      <Image source={logoSrc} style={{ width: 64 }} />
-      <Text>{title}</Text>
-      <View style={{ flexDirection: "column", gap: 6 }}>
-        <View
-          style={{
-            flexDirection: "row-reverse",
-            gap: 10,
-            justifyContent: "space-between",
-          }}
-        >
-          <Text>{`${dateTitle}`}</Text>
-          <Text>{`${dateValue}`}</Text>
+      <View style={{ flexDirection: "column", gap: 3 }}>
+        <View>
+          {invoiceNumberValue && (
+            <View
+              style={{
+                flexDirection: "column",
+                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "118px",
+                height: "60px",
+                border: 1,
+              }}
+            >
+              <Text
+                style={{ fontFamily: "Vazirmatn-Bold" }}
+              >{`${invoiceNumberTitle}`}</Text>
+              <Text
+                style={{ fontFamily: "Vazirmatn-Bold",fontSize:11 }}
+              >{`${invoiceNumberValue}`}</Text>
+            </View>
+          )}
         </View>
         <View
           style={{
-            flexDirection: "row-reverse",
+            flexDirection: "column",
+            width: "118px",
+            height: "60px",
+            border: 1,
             gap: 10,
-            justifyContent: "space-between",
+            padding: 10,
           }}
         >
-          <Text>{`${invoiceIdTitle}`}</Text>
-          <Text>{`${invoiceIdValue}`}</Text>
-        </View>
-        {invoiceNumberValue && (
           <View
             style={{
               flexDirection: "row-reverse",
-              gap: 10,
               justifyContent: "space-between",
             }}
           >
-            <Text>{`${invoiceNumberTitle}`}</Text>
-            <Text>{`${invoiceNumberValue}`}</Text>
+            <Text >{`${dateTitle}`}</Text>
+            <Text >{`${dateValue}`}</Text>
           </View>
-        )}
+          <View
+            style={{
+              flexDirection: "row-reverse",
+              justifyContent: "space-between",
+            }}
+          >
+         
+            <Text>{`${invoiceIdTitle}`}</Text>
+            <Text>{`${invoiceIdValue}`}</Text>
+          </View>
+        </View>
       </View>
+    </View>
+  );
+}
+function Heading({ invoice }: { invoice: Invoice }) {
+  const { status } = invoice;
+  const isPaid = status === "paid";
+  const invoiceType = isPaid ? "فاکتور" : "پیش فاکتور";
+  const title = `${invoiceType} فروش کالا و خدمات`;
+
+  return (
+    <View
+      style={{
+        flexDirection: "row-reverse",
+        alignItems: "center",
+        gap: 208,
+        paddingBottom: 5,
+      }}
+    >
+      <MapLogo />
+      <Text style={{ fontFamily: "Vazirmatn-Bold", fontSize: 12 }}>
+        {title}
+      </Text>
     </View>
   );
 }
@@ -84,14 +140,17 @@ function StampAndSignature({
         flexDirection: "row-reverse",
         justifyContent: "space-between",
         position: "relative",
+        border: 1,
+        marginVertical: 4,
+        height: 100,
       }}
     >
       <View
         style={{
           flexDirection: "row-reverse",
-          alignItems: "center",
           gap: 10,
           padding: 8,
+          width: "50%",
         }}
       >
         <Text>مهر و امضا فروشنده:</Text>
@@ -104,9 +163,8 @@ function StampAndSignature({
       <View
         style={{
           flexDirection: "row-reverse",
-          alignItems: "center",
-          width: "50%",
           borderRight: 1,
+          width: "50%",
           padding: 8,
         }}
       >
@@ -139,13 +197,11 @@ const InvoiceDocument = ({
   sellerDetails,
   buyerDetails,
   invoice,
-  logoSrc,
   stampSrc,
 }: {
   sellerDetails: Seller;
   buyerDetails: Buyer;
   invoice: Invoice;
-  logoSrc: string;
   stampSrc: string;
 }) => {
   const formattedInvoice: Invoice = invoiceFormatter(invoice);
@@ -158,21 +214,31 @@ const InvoiceDocument = ({
         style={{
           fontFamily: "Vazirmatn-Regular",
           fontSize: 8,
+          padding: "15px 40px 20px 40px",
         }}
       >
-        <View style={{ border: 1, margin: 10 }}>
-          <Heading logoSrc={logoSrc} invoice={formattedInvoice} />
-          <PersonDetails person={sellerDetails} type="seller" />
-          <PersonDetails person={buyerDetails} type="buyer" />
-          <ProductDetailsTable invoice={formattedInvoice} />
-          <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
-          <DescriptionRow
-            planName={invoice.plan.name}
-            type={invoice.type}
-            fromDate={dateNormalizer(invoice.from_date)}
-            toDate={dateNormalizer(invoice.to_date)}
-          />
+        <Heading invoice={formattedInvoice} />
+        <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+          <View>
+            <PersonDetails person={sellerDetails} type="seller" />
+            <PersonDetails person={buyerDetails} type="buyer" />
+          </View>
+          <View>
+            <InvoiceInfo invoice={formattedInvoice} />
+          </View>
         </View>
+        <ProductDetailsTable invoice={formattedInvoice} />
+        <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
+        <DescriptionRow
+          planName={invoice.plan.name}
+          previousPlan={history.plan.name}
+          type={invoice.type}
+          fromDate={dateNormalizer(invoice.from_date)}
+          toDate={dateNormalizer(invoice.to_date)}
+          shaibaNumber={sellerDetails.shaiba_number}
+          accountNumber={sellerDetails.account_number}
+          bankBranch={sellerDetails.bank_branch}
+        />
       </Page>
     </Document>
   );
@@ -186,24 +252,86 @@ const invoiceTypes = {
 function DescriptionRow({
   type,
   planName,
+  previousPlan,
   fromDate,
   toDate,
+  shaibaNumber,
+  accountNumber,
+  bankBranch,
 }: {
   type: string;
   planName: string;
+  previousPlan:string,
   fromDate: string;
   toDate: string;
+  shaibaNumber: string;
+  accountNumber: string;
+  bankBranch: string;
+
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  const description = `${
-    isRenewal ? "تمدید" : "ارتقا"
-  } به پلن ${planName} از تاریخ ${fromDate} تا تاریخ ${toDate}`;
-
+  console.log('isRenewal',isRenewal)
+  console.log('planid',invoice.plan.id)
+ // const description = `${isRenewal ? "تمدید" : "ارتقا"} به پلن ${planName}`;
+// const description = `${ isRenewal ? 'ارتقا':'تمدید'} از ${previousPlan} به ${planName}`
+const description =()=>{
+  if(isRenewal){
+    return `ارتقا از ${previousPlan} به ${planName}`
+  }else{
+    return `تمدید پلن ${planName}`
+  }
+}
+  const date = `از ${fromDate} تا ${toDate}`;
   return (
-    <View style={{ textAlign: "right", padding: 2, borderTop: 1 }}>
-      <View style={{ display: "flex", flexDirection: "row-reverse", gap: 6 }}>
-        <Text>توضیحات:</Text>
-        <Text>{description}</Text>
+    <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+      <View style={styles.title}>
+        <Text style={{ transform: "rotate(-90deg)" }}>توضیحات</Text>
+      </View>
+      <View
+        style={{
+          textAlign: "right",
+          padding: 7,
+          border: 1,
+          marginRight: 3,
+          width: "100%",
+          gap: 15,
+        }}
+      >
+        <View
+          style={{ display: "flex", flexDirection: "row-reverse", gap: 20 }}
+        >
+          <View
+            style={{ display: "flex", flexDirection: "row-reverse", gap: 4 }}
+          >
+            <TextField label={"شماره شبا "} value={shaibaNumber} />
+          </View>
+          <View
+            style={{ display: "flex", flexDirection: "row-reverse", gap: 4 }}
+          >
+            <TextField label={"شماره حساب "} value={accountNumber} />
+          </View>
+          <Text style={{ fontFamily: "Vazirmatn-Bold" }}>{bankBranch}</Text>
+        </View>
+        <View
+          style={{ display: "flex", flexDirection: "row-reverse", gap: 55 }}
+        >
+          <TextField label="نوع پلن" value={description()} />
+          <TextField label="تاریخ" value={date} />
+          <View
+            style={{
+              flexDirection: "row-reverse",
+              gap: 1,
+              fontFamily: "Vazirmatn-Bold",
+            }}
+          >
+            <Text>*</Text>
+            <Text>تمام قیمت ها به ریال است.</Text>
+          </View>
+        </View>
+        <View style={{display:'flex',flexDirection:'row-reverse'}}>
+          <Text>*</Text>
+          <Text> مانده از پلن قبلی، ۲۰ روز معادل ۲۴,۰۰۰,۰۰۰ ریال می‌باشد.</Text>
+        </View>
       </View>
     </View>
   );
