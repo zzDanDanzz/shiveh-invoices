@@ -4,7 +4,7 @@ import InvoiceDocument from "../shiveh-invoice";
 import "./demo.css";
 import vR from "./fonts/Vazirmatn-Regular.ttf";
 import vB from "./fonts/Vazirmatn-Bold.ttf";
-import logo from "./images/some-logo.png";
+// import logo from "./images/some-logo.png";
 import stamp from "./images/stamp.jpg";
 import { digitNormalizer } from "../utils";
 
@@ -22,6 +22,7 @@ function Demo() {
   return (
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
       <InvoiceDocument
+        // logoSrc={logo}
         stampSrc={stamp}
         sellerDetails={{
           address:

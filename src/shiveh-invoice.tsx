@@ -203,6 +203,7 @@ const InvoiceDocument = ({
   buyerDetails: Buyer;
   invoice: Invoice;
   stampSrc: string;
+  // logoSrc: string;
 }) => {
   const formattedInvoice: Invoice = invoiceFormatter(invoice);
 
