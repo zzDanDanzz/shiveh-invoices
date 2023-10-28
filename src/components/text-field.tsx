@@ -1,6 +1,5 @@
-import ReactPDF, { View, Text  } from "@react-pdf/renderer";
+import ReactPDF, { View, Text } from "@react-pdf/renderer";
 import { digitNormalizer } from "../utils";
-
 
 function TextField({
   label,
@@ -11,13 +10,13 @@ function TextField({
   label: string;
   value: string;
   faNums?: boolean;
-  style?: ReactPDF.Styles[''];
+  style?: ReactPDF.Styles[""];
 }) {
   return (
     <View
       style={{
         flexDirection: "row-reverse",
-        gap: 8,
+        gap: 5,
         ...style,
       }}
     >
