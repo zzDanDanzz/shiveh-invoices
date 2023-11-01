@@ -194,7 +194,7 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
             </View>
           </View>
           <Text style={{ width: "156.5px", padding: 8, borderRight: 1 }}>
-            {invoice.balance}
+            {digitNormalizer(invoice.CustomRemainOfPrevPlan)}
           </Text>
         </View>
       )}

@@ -42,6 +42,7 @@
     "vite-plugin-dts": "^2.3.0"
   },
   "dependencies": {
-    "@persian-tools/persian-tools": "^3.4.1"
+    "@persian-tools/persian-tools": "^3.4.1",
+    "jalali-moment": "^3.3.11"
   }
 }

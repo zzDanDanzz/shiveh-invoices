@@ -7,12 +7,13 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
+
 import ProductDetailsTable from "./components/product-details-table";
 import { Seller, Buyer, Invoice } from "./types";
 import { dateNormalizer, digitNormalizer } from "./utils";
 import TextField from "./components/text-field";
 import MapLogo from "./components/MapLogo";
-import { history } from "./demo/mock";
+import { history, invoice } from "./demo/mock";
 const styles = StyleSheet.create({
   title: {
     flexDirection: "row-reverse",
@@ -237,6 +238,8 @@ const InvoiceDocument = ({
           shaibaNumber={sellerDetails.shaiba_number}
           accountNumber={sellerDetails.account_number}
           bankBranch={sellerDetails.bank_branch}
+          remainingDays={invoice.CustomRemainingDays}
+          remainOfPrevPlan={invoice.CustomRemainOfPrevPlan}
         />
       </Page>
     </Document>
@@ -257,6 +260,8 @@ function DescriptionRow({
   shaibaNumber,
   accountNumber,
   bankBranch,
+  remainingDays,
+  remainOfPrevPlan,
 }: {
   type: string;
   planName: string;
@@ -266,10 +271,10 @@ function DescriptionRow({
   shaibaNumber: string;
   accountNumber: string;
   bankBranch: string;
+  remainingDays?: number;
+  remainOfPrevPlan?: number;
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  console.log("isRenewal", isRenewal);
-  // console.log("planid", invoice.plan.id);
   const description = () => {
     if (!isRenewal) {
       return `ارتقا از ${previousPlan} به ${planName}`;
@@ -324,10 +329,18 @@ function DescriptionRow({
             <Text>تمام قیمت ها به ریال است.</Text>
           </View>
         </View>
-        <View style={{ display: "flex", flexDirection: "row-reverse" }}>
-          <Text>*</Text>
-          <Text> مانده از پلن قبلی، ۲۰ روز معادل ۲۴,۰۰۰,۰۰۰ ریال می‌باشد.</Text>
-        </View>
+        {remainingDays && remainOfPrevPlan && (
+          <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+            <Text>*</Text>
+            <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+              <Text>مانده از پلن قبلی ، </Text>
+              <Text> {digitNormalizer(remainingDays)} </Text>
+              <Text> روز معادل </Text>
+              <Text> {digitNormalizer(remainOfPrevPlan)} </Text>
+              <Text> ریال می‌باشد. </Text>
+            </View>
+          </View>
+        )}
       </View>
     </View>
   );
