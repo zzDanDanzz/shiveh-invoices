@@ -43,6 +43,8 @@
   },
   "dependencies": {
     "@persian-tools/persian-tools": "^3.4.1",
-    "jalali-moment": "^3.3.11"
+    "@types/lodash.clonedeep": "^4.5.9",
+    "jalali-moment": "^3.3.11",
+    "lodash.clonedeep": "^4.5.0"
   }
 }

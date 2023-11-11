@@ -1,19 +1,20 @@
 import {
-  View,
-  Page,
-  Image,
-  Text,
   Document,
+  Image,
+  Page,
   StyleSheet,
+  Text,
+  View,
 } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 
-import ProductDetailsTable from "./components/product-details-table";
-import { Seller, Buyer, Invoice } from "./types";
-import { dateNormalizer, digitNormalizer } from "./utils";
-import TextField from "./components/text-field";
+import cloneDeep from "lodash.clonedeep";
 import MapLogo from "./components/MapLogo";
-import { history, invoice } from "./demo/mock";
+import ProductDetailsTable from "./components/product-details-table";
+import TextField from "./components/text-field";
+import { history } from "./demo/mock";
+import { Buyer, Invoice, Seller } from "./types";
+import { dateNormalizer, digitNormalizer } from "./utils";
 const styles = StyleSheet.create({
   title: {
     flexDirection: "row-reverse",
@@ -175,23 +176,17 @@ function StampAndSignature({
 }
 
 const tomanToRiyal = (n: number) => n * 10;
-const invoiceFormatter = (inv: Invoice): Invoice => ({
-  ...inv,
-  plan: {
-    ...inv.plan,
-    cost_per_month: tomanToRiyal(inv.plan.cost_per_month),
-    cost_per_year: {
-      ...inv.plan.cost_per_year,
-      en: tomanToRiyal(inv.plan.cost_per_year.en),
-    },
-  },
-  final_price: tomanToRiyal(inv.final_price),
-  balance: tomanToRiyal(inv.balance),
-  details: {
-    ...inv.details,
-    tax: tomanToRiyal(inv.details.tax),
-  },
-});
+
+const invoiceFormatter = (inv: Invoice) => {
+  const invCopy = cloneDeep(inv)
+  invCopy.plan.cost_per_month = tomanToRiyal(inv.plan.cost_per_month);
+  invCopy.plan.cost_per_year.en = tomanToRiyal(inv.plan.cost_per_year.en);
+  invCopy.final_price = tomanToRiyal(inv.final_price);
+  invCopy.balance = tomanToRiyal(inv.balance);
+  invCopy.details.tax = tomanToRiyal(inv.details.tax);
+  invCopy.CustomRemainOfPrevPlan = tomanToRiyal(inv.CustomRemainOfPrevPlan);
+  return invCopy
+};
 
 const InvoiceDocument = ({
   sellerDetails,
@@ -204,7 +199,7 @@ const InvoiceDocument = ({
   invoice: Invoice;
   stampSrc: string;
 }) => {
-  const formattedInvoice: Invoice = invoiceFormatter(invoice);
+  const riyalizedInvoice = invoiceFormatter(invoice);
 
   return (
     <Document>
@@ -217,29 +212,29 @@ const InvoiceDocument = ({
           padding: "15px 40px 20px 40px",
         }}
       >
-        <Heading invoice={formattedInvoice} />
+        <Heading invoice={riyalizedInvoice} />
         <View style={{ display: "flex", flexDirection: "row-reverse" }}>
           <View>
             <PersonDetails person={sellerDetails} type="seller" />
             <PersonDetails person={buyerDetails} type="buyer" />
           </View>
           <View>
-            <InvoiceInfo invoice={formattedInvoice} />
+            <InvoiceInfo invoice={riyalizedInvoice} />
           </View>
         </View>
-        <ProductDetailsTable invoice={formattedInvoice} />
-        <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
+        <ProductDetailsTable invoice={riyalizedInvoice} />
+        <StampAndSignature stampSrc={stampSrc} isPaid={riyalizedInvoice.is_paid} />
         <DescriptionRow
-          planName={invoice.plan.name}
+          planName={riyalizedInvoice.plan.name}
           previousPlan={history[1].plan.name}
-          type={invoice.type}
-          fromDate={dateNormalizer(invoice.from_date)}
-          toDate={dateNormalizer(invoice.to_date)}
+          type={riyalizedInvoice.type}
+          fromDate={dateNormalizer(riyalizedInvoice.from_date)}
+          toDate={dateNormalizer(riyalizedInvoice.to_date)}
           shaibaNumber={sellerDetails.shaiba_number}
           accountNumber={sellerDetails.account_number}
           bankBranch={sellerDetails.bank_branch}
-          remainingDays={invoice.CustomRemainingDays}
-          remainOfPrevPlan={invoice.CustomRemainOfPrevPlan}
+          remainingDays={riyalizedInvoice.CustomRemainingDays}
+          remainOfPrevPlan={riyalizedInvoice.CustomRemainOfPrevPlan}
         />
       </Page>
     </Document>

@@ -35,6 +35,7 @@ function getPlanDateDiff({ invoice }: { invoice: Invoice }) {
       : invoice.details.month === "12" && 360 - dateDiff;
   const balanceWithTax =
     invoice.balance !== undefined ? invoice.balance * 0.09 : undefined;
+
   return { remainingDays, balanceWithTax };
 }
 
