@@ -1,18 +1,20 @@
 import {
-  View,
-  Page,
-  Image,
-  Text,
   Document,
+  Image,
+  Page,
   StyleSheet,
+  Text,
+  View,
 } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
-import ProductDetailsTable from "./components/product-details-table";
-import { Seller, Buyer, Invoice} from "./types";
-import { dateNormalizer, digitNormalizer } from "./utils";
-import TextField from "./components/text-field";
+
+import cloneDeep from "lodash.clonedeep";
 import MapLogo from "./components/MapLogo";
-import { invoice,history } from "./demo/mock";
+import ProductDetailsTable from "./components/product-details-table";
+import TextField from "./components/text-field";
+import { history } from "./demo/mock";
+import { Buyer, Invoice, Seller } from "./types";
+import { dateNormalizer, digitNormalizer } from "./utils";
 const styles = StyleSheet.create({
   title: {
     flexDirection: "row-reverse",
@@ -38,7 +40,7 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
   const invoiceNumberTitle = "شماره فاکتور رسمی : ";
   const invoiceNumberValue = invoice_number
     ? digitNormalizer(invoice_number)
-    : '-';
+    : "-";
   return (
     <View
       style={{
@@ -65,7 +67,7 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
                 style={{ fontFamily: "Vazirmatn-Bold" }}
               >{`${invoiceNumberTitle}`}</Text>
               <Text
-                style={{ fontFamily: "Vazirmatn-Bold",fontSize:11 }}
+                style={{ fontFamily: "Vazirmatn-Bold", fontSize: 11 }}
               >{`${invoiceNumberValue}`}</Text>
             </View>
           )}
@@ -86,8 +88,8 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
               justifyContent: "space-between",
             }}
           >
-            <Text >{`${dateTitle}`}</Text>
-            <Text >{`${dateValue}`}</Text>
+            <Text>{`${dateTitle}`}</Text>
+            <Text>{`${dateValue}`}</Text>
           </View>
           <View
             style={{
@@ -95,7 +97,6 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
               justifyContent: "space-between",
             }}
           >
-         
             <Text>{`${invoiceIdTitle}`}</Text>
             <Text>{`${invoiceIdValue}`}</Text>
           </View>
@@ -175,23 +176,17 @@ function StampAndSignature({
 }
 
 const tomanToRiyal = (n: number) => n * 10;
-const invoiceFormatter = (inv: Invoice): Invoice => ({
-  ...inv,
-  plan: {
-    ...inv.plan,
-    cost_per_month: tomanToRiyal(inv.plan.cost_per_month),
-    cost_per_year: {
-      ...inv.plan.cost_per_year,
-      en: tomanToRiyal(inv.plan.cost_per_year.en),
-    },
-  },
-  final_price: tomanToRiyal(inv.final_price),
-  balance: tomanToRiyal(inv.balance),
-  details: {
-    ...inv.details,
-    tax: tomanToRiyal(inv.details.tax),
-  },
-});
+
+const invoiceFormatter = (inv: Invoice) => {
+  const invCopy = cloneDeep(inv)
+  invCopy.plan.cost_per_month = tomanToRiyal(inv.plan.cost_per_month);
+  invCopy.plan.cost_per_year.en = tomanToRiyal(inv.plan.cost_per_year.en);
+  invCopy.final_price = tomanToRiyal(inv.final_price);
+  invCopy.balance = tomanToRiyal(inv.balance);
+  invCopy.details.tax = tomanToRiyal(inv.details.tax);
+  invCopy.CustomRemainOfPrevPlan = tomanToRiyal(inv.CustomRemainOfPrevPlan);
+  return invCopy
+};
 
 const InvoiceDocument = ({
   sellerDetails,
@@ -203,9 +198,8 @@ const InvoiceDocument = ({
   buyerDetails: Buyer;
   invoice: Invoice;
   stampSrc: string;
-  // logoSrc: string;
 }) => {
-  const formattedInvoice: Invoice = invoiceFormatter(invoice);
+  const riyalizedInvoice = invoiceFormatter(invoice);
 
   return (
     <Document>
@@ -218,27 +212,29 @@ const InvoiceDocument = ({
           padding: "15px 40px 20px 40px",
         }}
       >
-        <Heading invoice={formattedInvoice} />
+        <Heading invoice={riyalizedInvoice} />
         <View style={{ display: "flex", flexDirection: "row-reverse" }}>
           <View>
             <PersonDetails person={sellerDetails} type="seller" />
             <PersonDetails person={buyerDetails} type="buyer" />
           </View>
           <View>
-            <InvoiceInfo invoice={formattedInvoice} />
+            <InvoiceInfo invoice={riyalizedInvoice} />
           </View>
         </View>
-        <ProductDetailsTable invoice={formattedInvoice} />
-        <StampAndSignature stampSrc={stampSrc} isPaid={invoice.is_paid} />
+        <ProductDetailsTable invoice={riyalizedInvoice} />
+        <StampAndSignature stampSrc={stampSrc} isPaid={riyalizedInvoice.is_paid} />
         <DescriptionRow
-          planName={invoice.plan.name}
-          previousPlan={history.plan.name}
-          type={invoice.type}
-          fromDate={dateNormalizer(invoice.from_date)}
-          toDate={dateNormalizer(invoice.to_date)}
+          planName={riyalizedInvoice.plan.name}
+          previousPlan={history[1].plan.name}
+          type={riyalizedInvoice.type}
+          fromDate={dateNormalizer(riyalizedInvoice.from_date)}
+          toDate={dateNormalizer(riyalizedInvoice.to_date)}
           shaibaNumber={sellerDetails.shaiba_number}
           accountNumber={sellerDetails.account_number}
           bankBranch={sellerDetails.bank_branch}
+          remainingDays={riyalizedInvoice.CustomRemainingDays}
+          remainOfPrevPlan={riyalizedInvoice.CustomRemainOfPrevPlan}
         />
       </Page>
     </Document>
@@ -259,29 +255,28 @@ function DescriptionRow({
   shaibaNumber,
   accountNumber,
   bankBranch,
+  remainingDays,
+  remainOfPrevPlan,
 }: {
   type: string;
   planName: string;
-  previousPlan:string,
+  previousPlan: string;
   fromDate: string;
   toDate: string;
   shaibaNumber: string;
   accountNumber: string;
   bankBranch: string;
-
+  remainingDays?: number;
+  remainOfPrevPlan?: number;
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  console.log('isRenewal',isRenewal)
-  console.log('planid',invoice.plan.id)
- // const description = `${isRenewal ? "تمدید" : "ارتقا"} به پلن ${planName}`;
-// const description = `${ isRenewal ? 'ارتقا':'تمدید'} از ${previousPlan} به ${planName}`
-const description =()=>{
-  if(isRenewal){
-    return `ارتقا از ${previousPlan} به ${planName}`
-  }else{
-    return `تمدید پلن ${planName}`
-  }
-}
+  const description = () => {
+    if (!isRenewal) {
+      return `ارتقا از ${previousPlan} به ${planName}`;
+    } else {
+      return `تمدید پلن ${planName}`;
+    }
+  };
   const date = `از ${fromDate} تا ${toDate}`;
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
@@ -329,10 +324,18 @@ const description =()=>{
             <Text>تمام قیمت ها به ریال است.</Text>
           </View>
         </View>
-        <View style={{display:'flex',flexDirection:'row-reverse'}}>
-          <Text>*</Text>
-          <Text> مانده از پلن قبلی، ۲۰ روز معادل ۲۴,۰۰۰,۰۰۰ ریال می‌باشد.</Text>
-        </View>
+        {remainingDays && remainOfPrevPlan && (
+          <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+            <Text>*</Text>
+            <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+              <Text>مانده از پلن قبلی ، </Text>
+              <Text> {digitNormalizer(remainingDays)} </Text>
+              <Text> روز معادل </Text>
+              <Text> {digitNormalizer(remainOfPrevPlan)} </Text>
+              <Text> ریال می‌باشد. </Text>
+            </View>
+          </View>
+        )}
       </View>
     </View>
   );

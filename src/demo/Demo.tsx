@@ -1,13 +1,13 @@
 import { Font, PDFViewer } from "@react-pdf/renderer";
-import { invoice, user } from "./mock";
+import { invoice, user, history } from "./mock";
+import { Invoice } from "../types";
 import InvoiceDocument from "../shiveh-invoice";
 import "./demo.css";
 import vR from "./fonts/Vazirmatn-Regular.ttf";
 import vB from "./fonts/Vazirmatn-Bold.ttf";
-// import logo from "./images/some-logo.png";
 import stamp from "./images/stamp.jpg";
 import { digitNormalizer } from "../utils";
-
+import moment from "jalali-moment";
 Font.register({
   family: "Vazirmatn-Regular",
   src: vR,
@@ -17,12 +17,33 @@ Font.register({
   family: "Vazirmatn-Bold",
   src: vB,
 });
+function getPlanDateDiff({ invoice }: { invoice: Invoice }) {
+  let fromDateOfCurrInvoiceHistory, fromDateOfPrevPlan;
+  const index = history.findIndex((currentValue) => {
+    return currentValue.from_date === invoice.from_date;
+  });
+  if (index != undefined) {
+    fromDateOfCurrInvoiceHistory = history[index].from_date;
+    fromDateOfPrevPlan = history[index + 1]?.from_date;
+  }
+  const momentDate1 = moment(fromDateOfCurrInvoiceHistory, "jYYYY/jM/jD");
+  const momentDate2 = moment(fromDateOfPrevPlan, "jYYYY/jM/jD");
+  const dateDiff = momentDate1.diff(momentDate2, "days");
+  const remainingDays =
+    invoice.details.month === "1"
+      ? 30 - dateDiff
+      : invoice.details.month === "12" && 360 - dateDiff;
+  const balanceWithTax =
+    invoice.balance !== undefined ? invoice.balance * 0.09 : undefined;
+
+  return { remainingDays, balanceWithTax };
+}
 
 function Demo() {
+  const { remainingDays, balanceWithTax } = getPlanDateDiff({ invoice });
   return (
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
       <InvoiceDocument
-        // logoSrc={logo}
         stampSrc={stamp}
         sellerDetails={{
           address:
@@ -39,7 +60,11 @@ function Demo() {
             "شرکت شیوه نرم‌افزار گستر آسیا - بانک اقتصاد نوین شعبه هفتم تیر ",
         }}
         buyerDetails={user}
-        invoice={invoice}
+        invoice={{
+          ...invoice,
+          CustomRemainingDays: remainingDays,
+          CustomRemainOfPrevPlan: balanceWithTax,
+        }}
       />
     </PDFViewer>
   );
