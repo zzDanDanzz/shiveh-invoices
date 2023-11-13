@@ -18,14 +18,13 @@ Font.register({
   src: vB,
 });
 function getPlanDateDiff({ invoice }: { invoice: Invoice }) {
-  let fromDateOfCurrInvoiceHistory, fromDateOfPrevPlan;
   const index = history.findIndex((currentValue) => {
     return currentValue.from_date === invoice.from_date;
   });
-  if (index != undefined) {
-    fromDateOfCurrInvoiceHistory = history[index].from_date;
-    fromDateOfPrevPlan = history[index + 1]?.from_date;
-  }
+  if (index === -1) return null;
+  const fromDateOfCurrInvoiceHistory = history[index].from_date;
+  const fromDateOfPrevPlan = history[index + 1]?.from_date;
+
   const momentDate1 = moment(fromDateOfCurrInvoiceHistory, "jYYYY/jM/jD");
   const momentDate2 = moment(fromDateOfPrevPlan, "jYYYY/jM/jD");
   const dateDiff = momentDate1.diff(momentDate2, "days");
@@ -40,7 +39,9 @@ function getPlanDateDiff({ invoice }: { invoice: Invoice }) {
 }
 
 function Demo() {
-  const { remainingDays, balanceWithTax } = getPlanDateDiff({ invoice });
+  const result = getPlanDateDiff({ invoice });
+  if (result === null) return;
+  const { remainingDays, balanceWithTax } = result;
   return (
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
       <InvoiceDocument

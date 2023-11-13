@@ -200,6 +200,10 @@ const InvoiceDocument = ({
   stampSrc: string;
 }) => {
   const riyalizedInvoice = invoiceFormatter(invoice);
+  const index= history.findIndex((currentValue)=>{
+    return currentValue.from_date===riyalizedInvoice.from_date
+  })
+console.log('index',index);
 
   return (
     <Document>
@@ -226,7 +230,7 @@ const InvoiceDocument = ({
         <StampAndSignature stampSrc={stampSrc} isPaid={riyalizedInvoice.is_paid} />
         <DescriptionRow
           planName={riyalizedInvoice.plan.name}
-          previousPlan={history[1].plan.name}
+          previousPlan={history[index+1].plan.name}
           type={riyalizedInvoice.type}
           fromDate={dateNormalizer(riyalizedInvoice.from_date)}
           toDate={dateNormalizer(riyalizedInvoice.to_date)}
