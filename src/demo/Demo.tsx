@@ -40,7 +40,7 @@ function getPlanDateDiff({ invoice }: { invoice: Invoice }) {
 
 function Demo() {
   const result = getPlanDateDiff({ invoice });
-  if (result === null) return;
+  if (result === null) return null;
   const { remainingDays, balanceWithTax } = result;
   return (
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
