@@ -39,9 +39,12 @@ function getPlanDateDiff({ invoice }: { invoice: Invoice }) {
 }
 
 function Demo() {
-  const result = getPlanDateDiff({ invoice });
-  if (result === null) return;
-  const { remainingDays, balanceWithTax } = result;
+  // const result = getPlanDateDiff({ invoice });
+  // if (result === null) return;
+  // const { remainingDays, balanceWithTax } = result;
+
+
+
   return (
     <PDFViewer style={{ height: "100vh", width: "100vw" }}>
       <InvoiceDocument
@@ -61,14 +64,46 @@ function Demo() {
             "شرکت شیوه نرم‌افزار گستر آسیا - بانک اقتصاد نوین شعبه هفتم تیر ",
         }}
         buyerDetails={user}
-        invoice={{
-          ...invoice,
-          CustomRemainingDays: remainingDays,
-          CustomRemainOfPrevPlan: balanceWithTax,
-        }}
+        invoice={mockInvoice}
       />
     </PDFViewer>
   );
+}
+
+const mockInvoice = {
+  "id": 1284,
+  "client_id": 499,
+  "details": {
+    "plan_id": 22,
+    "month": "1",
+    "tax_percent": 0.09,
+    "tax": 32265
+  },
+  "from_date": "1402-08-23 13:00:59",
+  "to_date": "1402-09-23 13:00:59",
+  "is_paid": true,
+  "created_at": "1402-08-23 13:00:59",
+  "updated_at": "1402-08-23 13:01:21",
+  "cost": "358500",
+  "type": "mop",
+  "invoice_number": null,
+  "cost_in_string": "358,500",
+  "status": "paid",
+  "final_price": 390765,
+  "balance": 1500,
+  "plan": {
+    "id": 22,
+    "name": "استارت آپ",
+    "cost_per_month": 360000,
+    "request_per_day": 15000,
+    "cost_per_year": {
+      "en": 4320000,
+      "fa": "۴۳۲۰۰۰۰"
+    }
+  },
+  "invoice_number_request": null,
+  "remainingDays": 30,
+  "remainOfPrevPlan": 135
 }
 
 export default Demo;

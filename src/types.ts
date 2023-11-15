@@ -67,8 +67,8 @@ export interface Invoice {
   final_price: number;
   balance: number;
   plan: Plan;
-  CustomRemainingDays?: any;
-  CustomRemainOfPrevPlan?: any;
+  remainingDays?: any;
+  remainOfPrevPlan?: any;
 }
 
 interface User {
