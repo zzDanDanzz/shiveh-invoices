@@ -12,7 +12,6 @@ import cloneDeep from "lodash.clonedeep";
 import MapLogo from "./components/MapLogo";
 import ProductDetailsTable from "./components/product-details-table";
 import TextField from "./components/text-field";
-import { history } from "./demo/mock";
 import { Buyer, Invoice, Seller } from "./types";
 import { dateNormalizer, digitNormalizer } from "./utils";
 const styles = StyleSheet.create({
@@ -178,14 +177,21 @@ function StampAndSignature({
 const tomanToRiyal = (n: number) => n * 10;
 
 const invoiceFormatter = (inv: Invoice) => {
-  const invCopy = cloneDeep(inv)
+  const invCopy = cloneDeep(inv);
   invCopy.plan.cost_per_month = tomanToRiyal(inv.plan.cost_per_month);
   invCopy.plan.cost_per_year.en = tomanToRiyal(inv.plan.cost_per_year.en);
   invCopy.final_price = tomanToRiyal(inv.final_price);
   invCopy.balance = tomanToRiyal(inv.balance);
   invCopy.details.tax = tomanToRiyal(inv.details.tax);
-  invCopy.CustomRemainOfPrevPlan = tomanToRiyal(inv.CustomRemainOfPrevPlan);
-  return invCopy
+  invCopy.remainOfPrevPlan = tomanToRiyal(inv.remainOfPrevPlan);
+  return invCopy;
+};
+
+export type InvoiceDocumentProps = {
+  sellerDetails: Seller;
+  buyerDetails: Buyer;
+  invoice: Invoice;
+  stampSrc: string;
 };
 
 const InvoiceDocument = ({
@@ -193,18 +199,8 @@ const InvoiceDocument = ({
   buyerDetails,
   invoice,
   stampSrc,
-}: {
-  sellerDetails: Seller;
-  buyerDetails: Buyer;
-  invoice: Invoice;
-  stampSrc: string;
-}) => {
+}: InvoiceDocumentProps) => {
   const riyalizedInvoice = invoiceFormatter(invoice);
-  const index= history.findIndex((currentValue)=>{
-    return currentValue.from_date===riyalizedInvoice.from_date
-  })
-console.log('index',index);
-
   return (
     <Document>
       <Page
@@ -227,18 +223,21 @@ console.log('index',index);
           </View>
         </View>
         <ProductDetailsTable invoice={riyalizedInvoice} />
-        <StampAndSignature stampSrc={stampSrc} isPaid={riyalizedInvoice.is_paid} />
+        <StampAndSignature
+          stampSrc={stampSrc}
+          isPaid={riyalizedInvoice.is_paid}
+        />
         <DescriptionRow
+          invoice={invoice}
           planName={riyalizedInvoice.plan.name}
-          previousPlan={history[index+1].plan.name}
           type={riyalizedInvoice.type}
           fromDate={dateNormalizer(riyalizedInvoice.from_date)}
           toDate={dateNormalizer(riyalizedInvoice.to_date)}
           shaibaNumber={sellerDetails.shaiba_number}
           accountNumber={sellerDetails.account_number}
           bankBranch={sellerDetails.bank_branch}
-          remainingDays={riyalizedInvoice.CustomRemainingDays}
-          remainOfPrevPlan={riyalizedInvoice.CustomRemainOfPrevPlan}
+          remainingDays={riyalizedInvoice.remainingDays}
+          remainOfPrevPlan={riyalizedInvoice.remainOfPrevPlan}
         />
       </Page>
     </Document>
@@ -253,7 +252,6 @@ const invoiceTypes = {
 function DescriptionRow({
   type,
   planName,
-  previousPlan,
   fromDate,
   toDate,
   shaibaNumber,
@@ -261,10 +259,10 @@ function DescriptionRow({
   bankBranch,
   remainingDays,
   remainOfPrevPlan,
+  invoice,
 }: {
   type: string;
   planName: string;
-  previousPlan: string;
   fromDate: string;
   toDate: string;
   shaibaNumber: string;
@@ -272,15 +270,14 @@ function DescriptionRow({
   bankBranch: string;
   remainingDays?: number;
   remainOfPrevPlan?: number;
+  invoice: Invoice;
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
-  const description = () => {
-    if (!isRenewal) {
-      return `ارتقا از ${previousPlan} به ${planName}`;
-    } else {
-      return `تمدید پلن ${planName}`;
-    }
-  };
+
+  const description = !isRenewal
+    ? `ارتقا از ${invoice?.previousPlanName} به ${planName}`
+    : `تمدید پلن ${planName}`;
+
   const date = `از ${fromDate} تا ${toDate}`;
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
@@ -315,7 +312,7 @@ function DescriptionRow({
         <View
           style={{ display: "flex", flexDirection: "row-reverse", gap: 55 }}
         >
-          <TextField label="نوع پلن" value={description()} />
+          <TextField label="نوع پلن" value={description} />
           <TextField label="تاریخ" value={date} />
           <View
             style={{

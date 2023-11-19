@@ -60,13 +60,13 @@ const productTableData: {
   },
   {
     widthPerc: 8,
-
     isNum: true,
     title: "مبلغ کل",
-    getValue: ({
-      details: { month },
-      plan: { cost_per_month, cost_per_year },
-    }) => (month === "12" ? cost_per_year.en : cost_per_month).toString(),
+    getValue: ({ details: { month }, plan: { cost_per_month } }) =>
+      (Number(month) > 1
+        ? cost_per_month * Number(month)
+        : cost_per_month
+      ).toString(),
   },
   { widthPerc: 8, title: "مبلغ تخفیف", getValue: null, isNum: true },
   { widthPerc: 13, title: "مبلغ کل پس از تخفیف", getValue: null, isNum: true },
@@ -81,7 +81,7 @@ const productTableData: {
     widthPerc: 21,
     title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
     isNum: true,
-    getValue: (inv) => inv.final_price.toString(),
+    getValue: (inv) => (inv.final_price + (inv.balance * inv.details.tax_percent)).toString(),
   },
 ];
 
@@ -194,7 +194,7 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
             </View>
           </View>
           <Text style={{ width: "156.5px", padding: 8, borderRight: 1 }}>
-            {digitNormalizer(invoice.CustomRemainOfPrevPlan)}
+            {digitNormalizer(invoice.remainOfPrevPlan)}
           </Text>
         </View>
       )}
