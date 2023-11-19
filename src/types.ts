@@ -37,6 +37,7 @@ export interface CurrentPlan {
   updated_at: string;
   plan: Plan;
 }
+
 export interface History {
   id: number;
   plan_id: number;
@@ -69,6 +70,7 @@ export interface Invoice {
   plan: Plan;
   remainingDays?: any;
   remainOfPrevPlan?: any;
+  previousPlanName?:string
 }
 
 interface User {

@@ -187,21 +187,20 @@ const invoiceFormatter = (inv: Invoice) => {
   return invCopy;
 };
 
+export type InvoiceDocumentProps = {
+  sellerDetails: Seller;
+  buyerDetails: Buyer;
+  invoice: Invoice;
+  stampSrc: string;
+};
+
 const InvoiceDocument = ({
   sellerDetails,
   buyerDetails,
   invoice,
   stampSrc,
-}: {
-  sellerDetails: Seller;
-  buyerDetails: Buyer;
-  invoice: Invoice;
-  stampSrc: string;
-}) => {
-  console.log(`original`, invoice);
+}: InvoiceDocumentProps) => {
   const riyalizedInvoice = invoiceFormatter(invoice);
-  console.log(`riyalizedInvoice`, riyalizedInvoice);
-
   return (
     <Document>
       <Page
@@ -229,6 +228,7 @@ const InvoiceDocument = ({
           isPaid={riyalizedInvoice.is_paid}
         />
         <DescriptionRow
+          invoice={invoice}
           planName={riyalizedInvoice.plan.name}
           type={riyalizedInvoice.type}
           fromDate={dateNormalizer(riyalizedInvoice.from_date)}
@@ -252,7 +252,6 @@ const invoiceTypes = {
 function DescriptionRow({
   type,
   planName,
-  // previousPlan,
   fromDate,
   toDate,
   shaibaNumber,
@@ -260,10 +259,10 @@ function DescriptionRow({
   bankBranch,
   remainingDays,
   remainOfPrevPlan,
+  invoice,
 }: {
   type: string;
   planName: string;
-  // previousPlan: string;
   fromDate: string;
   toDate: string;
   shaibaNumber: string;
@@ -271,13 +270,13 @@ function DescriptionRow({
   bankBranch: string;
   remainingDays?: number;
   remainOfPrevPlan?: number;
+  invoice: Invoice;
 }) {
   const isRenewal = type === invoiceTypes.EXTEND_SUB;
 
   const description = !isRenewal
-    ? `ارتقا از previousPlan به ${planName}`
+    ? `ارتقا از ${invoice?.previousPlanName} به ${planName}`
     : `تمدید پلن ${planName}`;
-
 
   const date = `از ${fromDate} تا ${toDate}`;
   return (
