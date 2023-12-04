@@ -75,13 +75,21 @@ const productTableData: {
     title: "جمع مالیات و عوارض",
 
     isNum: true,
-    getValue: (inv) => inv.details.tax.toString(),
+    getValue: ({ details: { month, tax_percent }, plan: { cost_per_month } }) =>
+      (Number(month) > 1
+        ? cost_per_month * Number(month) * tax_percent
+        : cost_per_month * tax_percent
+      ).toString(),
   },
   {
     widthPerc: 21,
     title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
     isNum: true,
-    getValue: (inv) => (inv.final_price + (inv.balance * inv.details.tax_percent)).toString(),
+    getValue: (inv) =>
+      (
+        inv.final_price +
+        (inv.balance * inv.details.tax_percent + inv.balance)
+      ).toString(),
   },
 ];
 
