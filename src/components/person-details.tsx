@@ -41,14 +41,14 @@ function PersonDetails({
   if (isNaturalPerson) {
     accountType = "حقیقی";
     name = (person as Buyer).name;
-    nationalCode = (person as Buyer).national_identity;
-    nationalCodeLabel = "شماره ملی";
+    nationalCode = (person as Buyer).national_number;
+    nationalCodeLabel = "کد ملی";
     phoneNumLabel = "شماره تماس ثابت";
   } else {
     accountType = "حقوقی";
     name = person.company;
-    nationalCode = person.national_number;
-    nationalCodeLabel = "شماره ثبت";
+    nationalCode = person.national_identity;
+    nationalCodeLabel = "شماره ثبت/شناسه ملی";
     phoneNumLabel = "شماره تماس ثابت / نمابر";
   }
 
@@ -89,7 +89,7 @@ function PersonDetails({
               value={person.financial_code || `${"کد اقتصادی"} موجود نیست`}
             />
           )}
-          <NumberField label={nationalCodeLabel} value={Number(nationalCode)} />
+          <NumberField label={nationalCodeLabel} value={nationalCode} />
         </View>
         {/*  شماره تماس و کد پستی  */}
         <View style={{ flexDirection: "row-reverse", gap: 40 }}>

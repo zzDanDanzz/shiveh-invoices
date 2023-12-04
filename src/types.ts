@@ -3,7 +3,7 @@ export type Seller = Pick<
   | "address"
   | "account_type"
   | "company"
-  | "national_number"
+  | "national_identity"
   | "financial_code"
   | "postalcode"
   | "telephone"
