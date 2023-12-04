@@ -47,7 +47,7 @@ function PersonDetails({
   } else {
     accountType = "حقوقی";
     name = person.company;
-    nationalCode = (person as Buyer).national_identity;
+    nationalCode = person.national_identity;
     nationalCodeLabel = "شماره ثبت/شناسه ملی";
     phoneNumLabel = "شماره تماس ثابت / نمابر";
   }
