@@ -1,17 +1,21 @@
 import { addCommas, numberToWords } from "@persian-tools/persian-tools";
 import { Line, Svg, Text, View } from "@react-pdf/renderer";
-import { Invoice } from "../types";
 import { digitNormalizer } from "../utils";
+
+import type { Invoice } from "../types";
+import type { Style } from "@react-pdf/types";
 
 interface TDataProps {
   bold?: boolean;
   isNum?: boolean;
   children: string;
+  styles?: Style;
 }
 
 const totalPriceRowData: {
   widthPerc: number;
   isNum?: boolean;
+  alignRight?: boolean;
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
   {
@@ -22,6 +26,7 @@ const totalPriceRowData: {
   },
   {
     widthPerc: 74,
+    alignRight: true,
     getValue(inv) {
       const numInWords = numberToWords(Math.round(inv.final_price));
       return `${numInWords} ریال`;
@@ -93,7 +98,12 @@ const productTableData: {
   },
 ];
 
-function TableData({ children, bold = false, isNum = false }: TDataProps) {
+function TableData({
+  children,
+  bold = false,
+  isNum = false,
+  styles,
+}: TDataProps) {
   const text = isNum ? digitNormalizer(addCommas(children)) : children;
 
   return (
@@ -104,6 +114,7 @@ function TableData({ children, bold = false, isNum = false }: TDataProps) {
           paddingTop: 2,
           textAlign: "center",
           ...(bold && { fontFamily: "Vazirmatn-Bold" }),
+          ...styles,
         }}
       >
         {text}
@@ -218,18 +229,24 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
           fontFamily: "Vazirmatn-Bold",
         }}
       >
-        {totalPriceRowData.map(({ getValue, widthPerc, isNum }, i) => {
-          const value = getValue?.(invoice) ?? " ";
-          return (
-            <TableColumn
-              key={value ?? i}
-              width={`${widthPerc}%`}
-              withBorderRight={i !== 0}
-            >
-              <TableData isNum={isNum}>{value}</TableData>
-            </TableColumn>
-          );
-        })}
+        {totalPriceRowData.map(
+          ({ getValue, widthPerc, isNum, alignRight }, i) => {
+            const value = getValue?.(invoice) ?? " ";
+            const styles: Style =
+              alignRight === true ? { textAlign: "right" } : {};
+            return (
+              <TableColumn
+                key={value ?? i}
+                width={`${widthPerc}%`}
+                withBorderRight={i !== 0}
+              >
+                <TableData isNum={isNum} styles={styles}>
+                  {value}
+                </TableData>
+              </TableColumn>
+            );
+          }
+        )}
       </View>
     </View>
   );
