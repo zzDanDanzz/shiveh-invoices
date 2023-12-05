@@ -1,11 +1,4 @@
-import {
-  Document,
-  Image,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 
 import cloneDeep from "lodash.clonedeep";
@@ -14,19 +7,7 @@ import ProductDetailsTable from "./components/product-details-table";
 import TextField from "./components/text-field";
 import { Buyer, Invoice, Seller } from "./types";
 import { dateNormalizer, digitNormalizer } from "./utils";
-const styles = StyleSheet.create({
-  title: {
-    flexDirection: "row-reverse",
-    gap: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "5%",
-    height: "85px",
-    border: "1px solid black",
-    padding: "5px",
-    backgroundColor: "#E5E7EC",
-  },
-});
+
 function InvoiceInfo({ invoice }: { invoice: Invoice }) {
   const { status, updated_at, created_at, id, invoice_number } = invoice;
   const isPaid = status === "paid";
@@ -281,17 +262,31 @@ function DescriptionRow({
   const date = `از ${fromDate} تا ${toDate}`;
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
-      <View style={styles.title}>
+      <View
+        style={{
+          flexDirection: "row-reverse",
+          gap: 4,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "5%",
+          border: "1px solid black",
+          padding: "5px",
+          backgroundColor: "#E5E7EC",
+        }}
+      >
         <Text style={{ transform: "rotate(-90deg)" }}>توضیحات</Text>
       </View>
       <View
         style={{
+          display: "flex",
+          justifyContent: "center",
           textAlign: "right",
           padding: 7,
           border: 1,
           marginRight: 3,
+          height: `${remainOfPrevPlan && remainingDays ? "80" : "60"}`,
           width: "100%",
-          gap: 15,
+          gap: 10,
         }}
       >
         <View
