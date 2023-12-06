@@ -35,7 +35,7 @@ const totalPriceRowData: {
 
   {
     widthPerc: 21,
-    getValue: (inv) => inv.final_price.toString(),
+    getValue: (inv) => (Math.round(inv.final_price)).toString(),
     isNum: true,
   },
 ];
@@ -91,9 +91,8 @@ const productTableData: {
     title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
     isNum: true,
     getValue: (inv) =>
-      (
-        inv.final_price +
-        (inv.balance * inv.details.tax_percent + inv.balance)
+      Math.round(
+        inv.final_price + (inv.balance * inv.details.tax_percent + inv.balance)
       ).toString(),
   },
 ];
@@ -213,7 +212,7 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
             </View>
           </View>
           <Text style={{ width: "156.5px", padding: 8, borderRight: 1 }}>
-            {digitNormalizer(invoice.remainOfPrevPlan)}
+            {digitNormalizer(Math.round(invoice.remainOfPrevPlan))}
           </Text>
         </View>
       )}
