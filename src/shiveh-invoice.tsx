@@ -327,7 +327,7 @@ function DescriptionRow({
               <Text>مانده از پلن قبلی ، </Text>
               <Text> {digitNormalizer(remainingDays)} </Text>
               <Text> روز معادل </Text>
-              <Text> {digitNormalizer(remainOfPrevPlan)} </Text>
+              <Text> {digitNormalizer(Math.round(remainOfPrevPlan))} </Text>
               <Text> ریال می‌باشد. </Text>
             </View>
           </View>
