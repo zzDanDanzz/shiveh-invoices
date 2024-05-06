@@ -260,6 +260,9 @@ function DescriptionRow({
     : `تمدید پلن ${planName}`;
 
   const date = `از ${fromDate} تا ${toDate}`;
+  console.log('remainOfPrevPlan,remainingDays',remainOfPrevPlan,remainingDays);
+  
+  
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
       <View
