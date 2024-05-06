@@ -260,6 +260,12 @@ function DescriptionRow({
     : `تمدید پلن ${planName}`;
 
   const date = `از ${fromDate} تا ${toDate}`;
+  console.log(
+    "remainOfPrevPlan,remainingDays",
+    remainOfPrevPlan,
+    remainingDays
+  );
+
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
       <View
@@ -290,7 +296,7 @@ function DescriptionRow({
         }}
       >
         <View
-          style={{ display: "flex", flexDirection: "row-reverse", gap: 20 }}
+          style={{ display: "flex", flexDirection: "row-reverse", gap: 50 }}
         >
           <View
             style={{ display: "flex", flexDirection: "row-reverse", gap: 4 }}
@@ -302,17 +308,19 @@ function DescriptionRow({
           >
             <TextField label={"شماره حساب "} value={accountNumber} />
           </View>
-          <Text style={{ fontFamily: "Vazirmatn-Bold" }}>{bankBranch}</Text>
+          <Text style={{ fontFamily: "Vazirmatn-Bold", marginRight: 20 }}>
+            {bankBranch}
+          </Text>
         </View>
         <View
-          style={{ display: "flex", flexDirection: "row-reverse", gap: 55 }}
+          style={{ display: "flex", flexDirection: "row-reverse", gap: 83 }}
         >
           <TextField label="نوع پلن" value={description} />
           <TextField label="تاریخ" value={date} />
           <View
             style={{
               flexDirection: "row-reverse",
-              gap: 1,
+              marginRight: -12,
               fontFamily: "Vazirmatn-Bold",
             }}
           >
