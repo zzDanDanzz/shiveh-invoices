@@ -1,7 +1,7 @@
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 
-import cloneDeep from "lodash.clonedeep";
+import cloneDeep from 'lodash.clonedeep';
 import MapLogo from "./components/MapLogo";
 import ProductDetailsTable from "./components/product-details-table";
 import TextField from "./components/text-field";
@@ -285,51 +285,53 @@ function DescriptionRow({
       <View
         style={{
           display: "flex",
-          justifyContent: "center",
+          flexDirection: 'column',
+          justifyContent: "space-between",
           textAlign: "right",
           padding: 7,
           border: 1,
           marginRight: 3,
-          height: `${remainOfPrevPlan && remainingDays ? "80" : "60"}`,
           width: "100%",
           gap: 10,
         }}
       >
-        <View
-          style={{ display: "flex", flexDirection: "row-reverse", gap: 50 }}
-        >
+        <View style={{display:'flex',flexDirection:'row-reverse',justifyContent: 'space-between',height:40}}>
           <View
-            style={{ display: "flex", flexDirection: "row-reverse", gap: 4 }}
+            style={{ display: "flex", flexDirection: "column", justifyContent: 'space-between', marginRight: 3 }}
           >
+
             <TextField label={"شماره شبا "} value={shaibaNumber} />
+            <TextField label="نوع پلن" value={description} />
+
+
+
+
           </View>
           <View
-            style={{ display: "flex", flexDirection: "row-reverse", gap: 4 }}
+            style={{ display: "flex", flexDirection: "column", justifyContent: 'space-between' }}
           >
             <TextField label={"شماره حساب "} value={accountNumber} />
+
+            <TextField label="تاریخ" value={date} />
+
           </View>
-          <Text style={{ fontFamily: "Vazirmatn-Bold", marginRight: 20 }}>
-            {bankBranch}
-          </Text>
-        </View>
-        <View
-          style={{ display: "flex", flexDirection: "row-reverse", gap: 83 }}
-        >
-          <TextField label="نوع پلن" value={description} />
-          <TextField label="تاریخ" value={date} />
-          <View
-            style={{
-              flexDirection: "row-reverse",
-              marginRight: -12,
-              fontFamily: "Vazirmatn-Bold",
-            }}
-          >
-            <Text>*</Text>
-            <Text>تمام قیمت ها به ریال است.</Text>
+          <View style={{ display: "flex", flexDirection: "column", justifyContent: 'space-between', marginLeft: 3 }}>
+            <Text style={{ fontFamily: "Vazirmatn-Bold", }}>
+              {bankBranch}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row-reverse",
+                fontFamily: "Vazirmatn-Bold",
+              }}
+            >
+              <Text>*</Text>
+              <Text>تمام قیمت ها به ریال است.</Text>
+            </View>
           </View>
         </View>
         {remainingDays && remainOfPrevPlan && (
-          <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+          <View style={{ display: "flex", flexDirection: "row-reverse" ,marginRight:3,marginTop:5 }}>
             <Text>*</Text>
             <View style={{ display: "flex", flexDirection: "row-reverse" }}>
               <Text>مانده از پلن قبلی ، </Text>

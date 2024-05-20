@@ -12,7 +12,7 @@
       "require": "./dist/shiveh-invoice.umd.cjs"
     }
   },
-  "version": "2.0.7",
+  "version": "2.0.8",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
@@ -27,6 +27,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.9",
     "@types/node": "^18.16.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
@@ -43,7 +44,6 @@
   },
   "dependencies": {
     "@persian-tools/persian-tools": "^3.4.1",
-    "@types/lodash.clonedeep": "^4.5.9",
     "jalali-moment": "^3.3.11",
     "lodash.clonedeep": "^4.5.0"
   }
