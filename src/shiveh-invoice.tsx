@@ -1,8 +1,7 @@
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 
-import * as _ from 'lodash';
-const cloneDeep = _.cloneDeep;
+import cloneDeep from 'lodash.clonedeep';
 import MapLogo from "./components/MapLogo";
 import ProductDetailsTable from "./components/product-details-table";
 import TextField from "./components/text-field";
