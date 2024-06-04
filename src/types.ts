@@ -66,6 +66,8 @@ export interface Invoice {
   cost_in_string: string;
   status: string;
   final_price: number;
+  discount_id:number;
+  discount_value:number;
   balance: number;
   plan: Plan;
   remainingDays?: any;
