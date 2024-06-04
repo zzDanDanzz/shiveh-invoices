@@ -165,6 +165,7 @@ const invoiceFormatter = (inv: Invoice) => {
   invCopy.balance = tomanToRiyal(inv.balance);
   invCopy.details.tax = tomanToRiyal(inv.details.tax);
   invCopy.remainOfPrevPlan = tomanToRiyal(inv.remainOfPrevPlan);
+  invCopy.discount_value = tomanToRiyal(inv.discount_value)
   return invCopy;
 };
 
@@ -295,7 +296,7 @@ function DescriptionRow({
           gap: 10,
         }}
       >
-        <View style={{display:'flex',flexDirection:'row-reverse',justifyContent: 'space-between',height:40}}>
+        <View style={{ display: 'flex', flexDirection: 'row-reverse', justifyContent: 'space-between', height: 40 }}>
           <View
             style={{ display: "flex", flexDirection: "column", justifyContent: 'space-between', marginRight: 3 }}
           >
@@ -330,8 +331,8 @@ function DescriptionRow({
             </View>
           </View>
         </View>
-        {remainingDays && remainOfPrevPlan && (
-          <View style={{ display: "flex", flexDirection: "row-reverse" ,marginRight:3,marginTop:5 }}>
+        {remainingDays && remainOfPrevPlan && invoice.previousPlanName !== 'پایه' && (
+          <View style={{ display: "flex", flexDirection: "row-reverse", marginRight: 3, marginTop: 5 }}>
             <Text>*</Text>
             <View style={{ display: "flex", flexDirection: "row-reverse" }}>
               <Text>مانده از پلن قبلی ، </Text>

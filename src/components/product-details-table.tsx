@@ -18,27 +18,27 @@ const totalPriceRowData: {
   alignRight?: boolean;
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
-  {
-    widthPerc: 7,
-    getValue() {
-      return "جمع کل:";
+    {
+      widthPerc: 7,
+      getValue() {
+        return "جمع کل:";
+      },
     },
-  },
-  {
-    widthPerc: 74,
-    alignRight: true,
-    getValue(inv) {
-      const numInWords = numberToWords(Math.round(inv.final_price));
-      return `${numInWords} ریال`;
+    {
+      widthPerc: 74,
+      alignRight: true,
+      getValue(inv) {
+        const numInWords = numberToWords(Math.round(inv.final_price));
+        return `${numInWords} ریال`;
+      },
     },
-  },
 
-  {
-    widthPerc: 21,
-    getValue: (inv) => (Math.round(inv.final_price)).toString(),
-    isNum: true,
-  },
-];
+    {
+      widthPerc: 21,
+      getValue: (inv) => (Math.round(inv.final_price)).toString(),
+      isNum: true,
+    },
+  ];
 
 const productTableData: {
   widthPerc: number;
@@ -46,56 +46,63 @@ const productTableData: {
   isNum?: boolean;
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
-  { widthPerc: 7, title: "ردیف", getValue: () => "1", isNum: true },
-  {
-    widthPerc: 20,
-    title: "شرح کالا",
-    getValue: () => "ارائه سرویس میزبانی نقشه",
-  },
-  {
-    widthPerc: 7,
-    title: "مدت",
-    getValue: (inv) => `${digitNormalizer(inv.details.month)} ماه`,
-  },
-  {
-    widthPerc: 8,
-    title: "مبلغ ماهانه",
-    getValue: (inv) => inv.plan.cost_per_month.toString(),
-    isNum: true,
-  },
-  {
-    widthPerc: 8,
-    isNum: true,
-    title: "مبلغ کل",
-    getValue: ({ details: { month }, plan: { cost_per_month } }) =>
-      (Number(month) > 1
-        ? cost_per_month * Number(month)
-        : cost_per_month
-      ).toString(),
-  },
-  { widthPerc: 8, title: "مبلغ تخفیف", getValue: null, isNum: true },
-  { widthPerc: 13, title: "مبلغ کل پس از تخفیف", getValue: null, isNum: true },
-  {
-    widthPerc: 10,
-    title: "جمع مالیات و عوارض",
+    { widthPerc: 7, title: "ردیف", getValue: () => "1", isNum: true },
+    {
+      widthPerc: 20,
+      title: "شرح کالا",
+      getValue: () => "ارائه سرویس میزبانی نقشه",
+    },
+    {
+      widthPerc: 7,
+      title: "مدت",
+      getValue: (inv) => `${digitNormalizer(inv.details.month)} ماه`,
+    },
+    {
+      widthPerc: 8,
+      title: "مبلغ ماهانه",
+      getValue: (inv) => inv.plan.cost_per_month.toString(),
+      isNum: true,
+    },
+    {
+      widthPerc: 8,
+      isNum: true,
+      title: "مبلغ کل",
+      getValue: ({ details: { month }, plan: { cost_per_month } }) =>
+        (Number(month) > 1
+          ? cost_per_month * Number(month)
+          : cost_per_month
+        ).toString(),
+    },
+    { widthPerc: 8, title: "مبلغ تخفیف", getValue: (inv) => inv.discount_value.toString(), isNum: true },
+    {
+      widthPerc: 13, title: "مبلغ کل پس از تخفیف",
+      getValue: ({ details: { month }, plan: { cost_per_month }, discount_value }) =>
+        (Number(month) > 1
+          ? (cost_per_month * Number(month)) - discount_value
+          : cost_per_month - discount_value
+        ).toString(), isNum: true
+    },
+    {
+      widthPerc: 10,
+      title: "جمع مالیات و عوارض",
 
-    isNum: true,
-    getValue: ({ details: { month, tax_percent }, plan: { cost_per_month } }) =>
-      (Number(month) > 1
-        ? cost_per_month * Number(month) * tax_percent
-        : cost_per_month * tax_percent
-      ).toString(),
-  },
-  {
-    widthPerc: 21,
-    title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
-    isNum: true,
-    getValue: (inv) =>
-      Math.round(
-        inv.final_price + (inv.balance * inv.details.tax_percent + inv.balance)
-      ).toString(),
-  },
-];
+      isNum: true,
+      getValue: ({ details: { month, tax_percent }, plan: { cost_per_month }, discount_value }) =>
+        (Number(month) > 1
+          ? ((cost_per_month * Number(month)) - discount_value) * tax_percent
+          : (cost_per_month - discount_value) * tax_percent
+        ).toString(),
+    },
+    {
+      widthPerc: 21,
+      title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
+      isNum: true,
+      getValue: (inv) =>
+        Math.round(
+          inv.final_price + (inv.balance * inv.details.tax_percent + inv.balance)
+        ).toString(),
+    },
+  ];
 
 function TableData({
   children,
@@ -177,7 +184,7 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
           </TableColumn>
         ))}
       </View>
-      {invoice.balance && (
+      {invoice.balance && invoice.previousPlanName !== 'پایه' && (
         <View
           style={{
             borderTop: 1.4,

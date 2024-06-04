@@ -27,45 +27,41 @@ export const invoiceDocumentMockProps = {
     postalcode: "1854112545",
     telephone: "02155934152",
   },
-  invoice: {
-    id: 1269,
-    client_id: 384,
-    details: {
-      plan_id: 28,
-      month: "1",
-      tax_percent: 0.09,
-      tax: 135,
+ invoice: {
+    "id": 1681,
+    "client_id": 589,
+    "details": {
+        "plan_id": 24,
+        "month": '12',
+        "tax_percent": 0.1,
+        "tax": 6912000
     },
-    from_date: "1402-08-22 16:11:25",
-    to_date: "1402-09-22 16:11:25",
-    is_paid: true,
-    created_at: "1402-08-22 16:11:25",
-    updated_at: "1402-08-22 16:11:51",
-    cost: "1500",
-    type: "mop",
-    invoice_number: null,
-    cost_in_string: "1,500",
-    status: "paid",
-    final_price: 1635,
-    balance: 0,
-    plan: {
-      id: 28,
-      name: "پرداخت تست",
-      cost_per_month: 1500,
-      request_per_day: 20000,
-      cost_per_year: {
-        en: 18000,
-        fa: "۱۸۰۰۰",
-      },
+    "from_date": "1403-03-11 10:22:38",
+    "to_date": "1404-03-11 10:22:38",
+    "is_paid": false,
+    "created_at": "1403-03-11 10:22:38",
+    "updated_at": "1403-03-12 04:00:02",
+    "cost": "86400000",
+    "type": "mop",
+    "invoice_number": null,
+    "discount_id": 100,
+    "discount_value": 17280000,
+    "cost_in_string": "86,400,000",
+    "status": "expired",
+    "final_price": 76032000,
+    "balance": 0,
+    "plan": {
+        "id": 24,
+        "name": "اقتصادی",
+        "cost_per_month": 7200000,
+        "request_per_day": 400000,
+        "cost_per_year": {
+            "en": 86400000,
+            "fa": "۸۶۴۰۰۰۰۰"
+        }
     },
-    invoice_number_request: {
-      id: 48,
-      invoice_id: 1269,
-      user_id: "3d7bc9fb-8273-40d0-97b1-6b84e632ab06",
-      created_at: "1402-09-04 12:30:40",
-      updated_at: "1402-09-04 12:30:40",
-    },
-    previousPlanName: "پایه",
-  },
+    "invoice_number_request": null,
+    previousPlanName:'پایه'
+}
 };
 
