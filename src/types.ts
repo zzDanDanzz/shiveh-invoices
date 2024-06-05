@@ -55,6 +55,7 @@ export interface Invoice {
   id: number;
   client_id: number;
   details: Details;
+  client?: Client;
   from_date: string;
   to_date: string;
   is_paid: boolean;
@@ -74,7 +75,27 @@ export interface Invoice {
   remainOfPrevPlan?: any;
   previousPlanName?:string
 }
-
+export interface Client {
+    id: number;
+    name: string;
+    personal_access_client: boolean;
+    password_access_client: boolean;
+    created_at: string;
+    updated_at: string;
+    ip: null;
+    domain: null;
+    to_date: string;
+    is_disabled: boolean;
+    balance: number;
+    plan_id: number;
+    preferred_plan_id: number;
+    redirect_uri: string;
+    total_count: number;
+    rate: number;
+    logo: null;
+    is_disabled_admin: boolean;
+    user: User;
+  }
 interface User {
   id: string;
   name: string;
