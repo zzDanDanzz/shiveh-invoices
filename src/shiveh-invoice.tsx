@@ -1,7 +1,7 @@
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import PersonDetails from "./components/person-details";
 
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from "lodash.clonedeep";
 import MapLogo from "./components/MapLogo";
 import ProductDetailsTable from "./components/product-details-table";
 import TextField from "./components/text-field";
@@ -17,7 +17,7 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
   const invoiceIdTitle = "شناسه پرداخت :";
   const invoiceIdValue = digitNormalizer(id);
 
-  const invoiceNumberTitle = "شماره فاکتور رسمی : ";
+  const invoiceNumberTitle = "شماره فاکتور : ";
   const invoiceNumberValue = invoice_number
     ? digitNormalizer(invoice_number)
     : "-";
@@ -35,10 +35,10 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
             <View
               style={{
                 flexDirection: "column",
-                gap: 10,
+                gap: 7,
                 justifyContent: "center",
                 alignItems: "center",
-                width: "118px",
+                width: "152px",
                 height: "60px",
                 border: 1,
               }}
@@ -47,7 +47,12 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
                 style={{ fontFamily: "Vazirmatn-Bold" }}
               >{`${invoiceNumberTitle}`}</Text>
               <Text
-                style={{ fontFamily: "Vazirmatn-Bold", fontSize: 11 }}
+                style={{
+                  fontFamily: "B Davat",
+                  fontWeight: "bold",
+                  color: invoice_number ? "red" : "black",
+                  fontSize: 17,
+                }}
               >{`${invoiceNumberValue}`}</Text>
             </View>
           )}
@@ -55,7 +60,7 @@ function InvoiceInfo({ invoice }: { invoice: Invoice }) {
         <View
           style={{
             flexDirection: "column",
-            width: "118px",
+            width: "152px",
             height: "60px",
             border: 1,
             gap: 10,
@@ -131,7 +136,7 @@ function StampAndSignature({
           flexDirection: "row-reverse",
           gap: 10,
           padding: 8,
-          width: "50%",
+          width: "51%",
         }}
       >
         <Text>مهر و امضا فروشنده:</Text>
@@ -145,7 +150,7 @@ function StampAndSignature({
         style={{
           flexDirection: "row-reverse",
           borderRight: 1,
-          width: "50%",
+          width: "51%",
           padding: 8,
         }}
       >
@@ -165,7 +170,7 @@ const invoiceFormatter = (inv: Invoice) => {
   invCopy.balance = tomanToRiyal(inv.balance);
   invCopy.details.tax = tomanToRiyal(inv.details.tax);
   invCopy.remainOfPrevPlan = tomanToRiyal(inv.remainOfPrevPlan);
-  invCopy.discount_value = tomanToRiyal(inv.discount_value)
+  invCopy.discount_value = tomanToRiyal(inv.discount_value);
   return invCopy;
 };
 
@@ -261,11 +266,6 @@ function DescriptionRow({
     : `تمدید پلن ${planName}`;
 
   const date = `از ${fromDate} تا ${toDate}`;
-  console.log(
-    "remainOfPrevPlan,remainingDays",
-    remainOfPrevPlan,
-    remainingDays
-  );
 
   return (
     <View style={{ display: "flex", flexDirection: "row-reverse" }}>
@@ -275,7 +275,7 @@ function DescriptionRow({
           gap: 4,
           justifyContent: "center",
           alignItems: "center",
-          width: "5%",
+          width: "50px",
           border: "1px solid black",
           padding: "5px",
           backgroundColor: "#E5E7EC",
@@ -286,63 +286,70 @@ function DescriptionRow({
       <View
         style={{
           display: "flex",
-          flexDirection: 'column',
+          flexDirection: "row",
           justifyContent: "space-between",
           textAlign: "right",
-          padding: 7,
+          paddingHorizontal: 20,
           border: 1,
           marginRight: 3,
+          height: `${remainOfPrevPlan && remainingDays ? "80" : "60"}`,
           width: "100%",
           gap: 10,
         }}
       >
-        <View style={{ display: 'flex', flexDirection: 'row-reverse', justifyContent: 'space-between', height: 40 }}>
+        <View
+          style={{
+            marginVertical: 7,
+            fontFamily: "Vazirmatn-Bold",
+            gap: 10,
+          }}
+        >
+          <Text>{bankBranch}</Text>
           <View
-            style={{ display: "flex", flexDirection: "column", justifyContent: 'space-between', marginRight: 3 }}
+            style={{
+              flexDirection: "row-reverse",
+            }}
           >
-
-            <TextField label={"شماره شبا "} value={shaibaNumber} />
-            <TextField label="نوع پلن" value={description} />
-
-
-
-
-          </View>
-          <View
-            style={{ display: "flex", flexDirection: "column", justifyContent: 'space-between' }}
-          >
-            <TextField label={"شماره حساب "} value={accountNumber} />
-
-            <TextField label="تاریخ" value={date} />
-
-          </View>
-          <View style={{ display: "flex", flexDirection: "column", justifyContent: 'space-between', marginLeft: 3 }}>
-            <Text style={{ fontFamily: "Vazirmatn-Bold", }}>
-              {bankBranch}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row-reverse",
-                fontFamily: "Vazirmatn-Bold",
-              }}
-            >
-              <Text>*</Text>
-              <Text>تمام قیمت ها به ریال است.</Text>
-            </View>
+            <Text>*</Text>
+            <Text>تمام قیمت ها به ریال است.</Text>
           </View>
         </View>
-        {remainingDays && remainOfPrevPlan && invoice.previousPlanName !== 'پایه' && (
-          <View style={{ display: "flex", flexDirection: "row-reverse", marginRight: 3, marginTop: 5 }}>
-            <Text>*</Text>
+        <View
+          style={{
+            marginVertical: 7,
+
+            gap: 10,
+          }}
+        >
+          <TextField label={"شماره حساب "} value={accountNumber} />
+          <TextField label="تاریخ" value={date} />
+        </View>
+        <View
+          style={{
+            marginVertical: 7,
+            gap: 10,
+          }}
+        >
+          <TextField label={"شماره شبا "} value={shaibaNumber} />
+          <TextField label="نوع پلن" value={description} />
+          {remainingDays && remainOfPrevPlan && (
             <View style={{ display: "flex", flexDirection: "row-reverse" }}>
-              <Text>مانده از پلن قبلی ، </Text>
-              <Text> {digitNormalizer(remainingDays)} </Text>
-              <Text> روز معادل </Text>
-              <Text> {digitNormalizer(Math.round(remainOfPrevPlan))} </Text>
-              <Text> ریال می‌باشد. </Text>
+              <Text>*</Text>
+              <View style={{ display: "flex", flexDirection: "row-reverse" }}>
+                <Text>مانده از پلن قبلی ، </Text>
+                <Text> {digitNormalizer(remainingDays)} </Text>
+                <Text> روز معادل </Text>
+                <Text>
+                  {" "}
+                  {digitNormalizer(
+                    Math.round(remainOfPrevPlan).toLocaleString()
+                  )}{" "}
+                </Text>
+                <Text> ریال می‌باشد. </Text>
+              </View>
             </View>
-          </View>
-        )}
+          )}
+        </View>
       </View>
     </View>
   );

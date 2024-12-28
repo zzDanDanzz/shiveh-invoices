@@ -16,29 +16,71 @@ const totalPriceRowData: {
   widthPerc: number;
   isNum?: boolean;
   alignRight?: boolean;
+  color?: string;
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
-    {
-      widthPerc: 7,
-      getValue() {
-        return "جمع کل:";
-      },
+  {
+    widthPerc: 7,
+    getValue() {
+      return "جمع کل:";
     },
-    {
-      widthPerc: 74,
-      alignRight: true,
-      getValue(inv) {
-        const numInWords = numberToWords(Math.round(inv.final_price));
-        return `${numInWords} ریال`;
-      },
+  },
+  {
+    widthPerc: 34,
+    alignRight: true,
+    getValue(inv) {
+      const numInWords = numberToWords(Math.round(inv.final_price));
+      return `${numInWords} ریال`;
     },
-
-    {
-      widthPerc: 21,
-      getValue: (inv) => (Math.round(inv.final_price)).toString(),
-      isNum: true,
-    },
-  ];
+  },
+  {
+    widthPerc: 8,
+    getValue: ({
+      details: { month },
+      plan: { cost_per_month },
+      remainOfPrevPlan,
+    }) =>
+      remainOfPrevPlan
+        ? ""
+        : digitNormalizer(
+            (Number(month) > 1
+              ? cost_per_month * Number(month)
+              : cost_per_month
+            ).toString()
+          ),
+  },
+  {
+    widthPerc: 8,
+    getValue: null,
+    isNum: true,
+  },
+  {
+    widthPerc: 13,
+    getValue: null,
+    isNum: true,
+  },
+  {
+    widthPerc: 13,
+    getValue: ({
+      details: { month, tax_percent },
+      plan: { cost_per_month },
+      remainOfPrevPlan,
+    }) =>
+      remainOfPrevPlan
+        ? ""
+        : (Number(month) > 1
+            ? cost_per_month * Number(month) * tax_percent
+            : cost_per_month * tax_percent
+          ).toString(),
+    isNum: true,
+  },
+  {
+    widthPerc: 21,
+    getValue: (inv) => Math.round(inv.final_price).toString(),
+    isNum: true,
+    color: "#E5E7EC",
+  },
+];
 
 const productTableData: {
   widthPerc: number;
@@ -46,63 +88,78 @@ const productTableData: {
   isNum?: boolean;
   getValue: ((inv: Invoice) => string) | null;
 }[] = [
-    { widthPerc: 7, title: "ردیف", getValue: () => "1", isNum: true },
-    {
-      widthPerc: 20,
-      title: "شرح کالا",
-      getValue: () => "ارائه سرویس میزبانی نقشه",
-    },
-    {
-      widthPerc: 7,
-      title: "مدت",
-      getValue: (inv) => `${digitNormalizer(inv.details.month)} ماه`,
-    },
-    {
-      widthPerc: 8,
-      title: "مبلغ ماهانه",
-      getValue: (inv) => inv.plan.cost_per_month.toString(),
-      isNum: true,
-    },
-    {
-      widthPerc: 8,
-      isNum: true,
-      title: "مبلغ کل",
-      getValue: ({ details: { month }, plan: { cost_per_month } }) =>
-        (Number(month) > 1
-          ? cost_per_month * Number(month)
-          : cost_per_month
-        ).toString(),
-    },
-    { widthPerc: 8, title: "مبلغ تخفیف", getValue: (inv) => inv.discount_value.toString(), isNum: true },
-    {
-      widthPerc: 13, title: "مبلغ کل پس از تخفیف",
-      getValue: ({ details: { month }, plan: { cost_per_month }, discount_value }) =>
-        (Number(month) > 1
-          ? (cost_per_month * Number(month)) - discount_value
-          : cost_per_month - discount_value
-        ).toString(), isNum: true
-    },
-    {
-      widthPerc: 10,
-      title: "جمع مالیات و عوارض",
+  { widthPerc: 7, title: "ردیف", getValue: () => "1", isNum: true },
+  {
+    widthPerc: 19,
+    title: "شرح کالا",
+    getValue: () => "ارائه سرویس میزبانی نقشه",
+  },
+  {
+    widthPerc: 7,
+    title: "مدت",
+    getValue: (inv) => `${digitNormalizer(inv.details.month)} ماه`,
+  },
+  {
+    widthPerc: 8,
+    title: "مبلغ ماهانه",
+    getValue: (inv) => inv.plan.cost_per_month.toString(),
+    isNum: true,
+  },
+  {
+    widthPerc: 8,
+    isNum: true,
+    title: "مبلغ کل",
+    getValue: ({ details: { month }, plan: { cost_per_month } }) =>
+      (Number(month) > 1
+        ? cost_per_month * Number(month)
+        : cost_per_month
+      ).toString(),
+  },
+  {
+    widthPerc: 8,
+    title: "مبلغ تخفیف",
+    getValue: (inv) => inv.discount_value.toString(),
+    isNum: true,
+  },
+  {
+    widthPerc: 13,
+    title: "مبلغ کل پس از تخفیف",
+    getValue: ({
+      details: { month },
+      plan: { cost_per_month },
+      discount_value,
+    }) =>
+      (Number(month) > 1
+        ? cost_per_month * Number(month) - discount_value
+        : cost_per_month - discount_value
+      ).toString(),
+    isNum: true,
+  },
+  {
+    widthPerc: 13,
+    title: "جمع مالیات و عوارض",
 
-      isNum: true,
-      getValue: ({ details: { month, tax_percent }, plan: { cost_per_month }, discount_value }) =>
-        (Number(month) > 1
-          ? ((cost_per_month * Number(month)) - discount_value) * tax_percent
-          : (cost_per_month - discount_value) * tax_percent
-        ).toString(),
-    },
-    {
-      widthPerc: 21,
-      title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
-      isNum: true,
-      getValue: (inv) =>
-        Math.round(
-          inv.final_price + (inv.balance * inv.details.tax_percent + inv.balance)
-        ).toString(),
-    },
-  ];
+    isNum: true,
+    getValue: ({
+      details: { month, tax_percent },
+      plan: { cost_per_month },
+      discount_value,
+    }) =>
+      (Number(month) > 1
+        ? (cost_per_month * Number(month) - discount_value) * tax_percent
+        : (cost_per_month - discount_value) * tax_percent
+      ).toString(),
+  },
+  {
+    widthPerc: 21,
+    title: `جمع مبلغ کل بعلاوه مالیات و عوارض`,
+    isNum: true,
+    getValue: (inv) =>
+      Math.round(
+        inv.final_price + (inv.balance * inv.details.tax_percent + inv.balance)
+      ).toString(),
+  },
+];
 
 function TableData({
   children,
@@ -141,15 +198,18 @@ function TableColumn({
   children,
   width,
   withBorderRight,
+  backgroundColor,
 }: {
   width: string | number;
   withBorderRight?: boolean;
+  backgroundColor?: string;
 } & React.PropsWithChildren) {
   return (
     <View
       style={{
         flexDirection: "column",
         borderRight: 0,
+        backgroundColor,
         width,
         ...(withBorderRight && { borderRight: 1 }),
       }}
@@ -181,10 +241,18 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
             {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
             {/* @ts-ignore */}
             <TableData isNum={isNum}>{getValue?.(invoice) ?? " "}</TableData>
+            <HorizontalLine />
+            <TableData>
+              {title === "ردیف" ? digitNormalizer("2") : " "}
+            </TableData>
+            <HorizontalLine />
+            <TableData>
+              {title === "ردیف" ? digitNormalizer("3") : " "}
+            </TableData>
           </TableColumn>
         ))}
       </View>
-      {invoice.balance && invoice.previousPlanName !== 'پایه' && (
+      {invoice.balance && invoice.previousPlanName !== "پایه" && (
         <View
           style={{
             borderTop: 1.4,
@@ -198,7 +266,7 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
         >
           <View
             style={{
-              width: "74.5px",
+              width: "95px",
               padding: 4,
               borderRight: 1,
               flexDirection: "column",
@@ -214,11 +282,21 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
             </View>
             <View style={{ justifyContent: "center", flexDirection: "row" }}>
               <Text>(</Text>
-              <Text style={{ fontSize: 6 }}>با احتساب ارزش افزوده</Text>
+              <Text style={{ fontSize: 6 }}>با احتساب مالیات و عوارض</Text>
               <Text>)</Text>
             </View>
           </View>
-          <Text style={{ width: "156.5px", padding: 8, borderRight: 1 }}>
+          <Text
+            style={{
+              display: "flex",
+              width: "153.5px",
+              borderRight: 1,
+              alignItems: "center",
+              justifyContent: "center",
+
+              padding: 8,
+            }}
+          >
             {digitNormalizer(Math.round(invoice.remainOfPrevPlan))}
           </Text>
         </View>
@@ -236,15 +314,19 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
         }}
       >
         {totalPriceRowData.map(
-          ({ getValue, widthPerc, isNum, alignRight }, i) => {
+          ({ getValue, widthPerc, isNum, alignRight, color }, i) => {
             const value = getValue?.(invoice) ?? " ";
+
             const styles: Style =
               alignRight === true ? { textAlign: "right" } : {};
             return (
               <TableColumn
                 key={value ?? i}
                 width={`${widthPerc}%`}
-                withBorderRight={i !== 0}
+                withBorderRight={
+                  invoice.remainOfPrevPlan ? i === 1 || i === 6 : i !== 0
+                }
+                backgroundColor={color}
               >
                 <TableData isNum={isNum} styles={styles}>
                   {value}
