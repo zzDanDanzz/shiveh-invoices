@@ -297,7 +297,9 @@ function ProductDetailsTable({ invoice }: { invoice: Invoice }) {
               padding: 8,
             }}
           >
-            {digitNormalizer(Math.round(invoice.remainOfPrevPlan))}
+            {digitNormalizer(
+              Math.round(invoice.remainOfPrevPlan).toLocaleString()
+            )}
           </Text>
         </View>
       )}
