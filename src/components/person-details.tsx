@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     gap: 4,
     justifyContent: "center",
     alignItems: "center",
-    width: "5%",
+    width: "50px",
     height: "60px",
     border: "1px solid black",
     padding: "5px",
@@ -58,7 +58,7 @@ function PersonDetails({
         display: "flex",
         marginBottom: 3,
         flexDirection: "row-reverse",
-        gap: 3,
+        gap: 4,
       }}
     >
       {/* rotate title */}
@@ -72,37 +72,47 @@ function PersonDetails({
         style={{
           flexDirection: "column",
           border: 1,
-          width: "92%",
+          width: "87.7%",
           padding: "5px",
           gap: 3,
         }}
       >
-        {/* نام، شماره اقتصادی و ملی */}
-        <View style={{ flexDirection: "row-reverse", gap: 40 }}>
-          <TextField
-            label={`نام شخص ${accountType}`}
-            value={name || `${"نام"} موجود نیست`}
-          />
-          {!isNaturalPerson && (
-            <NumberField
-              label={"شماره اقتصادی"}
-              value={person.financial_code || `${"کد اقتصادی"} موجود نیست`}
+        <View
+          style={{
+            flexDirection: "row-reverse",
+            gap: "50px",
+          }}
+        >
+          {/* نام، شماره اقتصادی و ملی */}
+          <View style={{ gap: 5 }}>
+            <TextField
+              label={`نام شخص ${accountType}`}
+              value={name || `${"نام"} موجود نیست`}
             />
-          )}
-          <NumberField label={nationalCodeLabel} value={nationalCode} />
+            <TextField
+              label={phoneNumLabel}
+              value={person.telephone || `${phoneNumLabel} موجود نیست`}
+              faNums
+            />
+          </View>
+          {/*  شماره تماس و کد پستی  */}
+          <View style={{ gap: 5 }}>
+            <NumberField label={nationalCodeLabel} value={nationalCode} />
+            <NumberField
+              label={"کد پستی"}
+              value={person.postalcode || `${"کد پستی"} موجود نیست`}
+            />
+          </View>
+          <View>
+            {!isNaturalPerson && (
+              <NumberField
+                label={"شماره اقتصادی"}
+                value={person.financial_code || `${"کد اقتصادی"} موجود نیست`}
+              />
+            )}
+          </View>
         </View>
-        {/*  شماره تماس و کد پستی  */}
-        <View style={{ flexDirection: "row-reverse", gap: 40 }}>
-          <TextField
-            label={phoneNumLabel}
-            value={person.telephone || `${phoneNumLabel} موجود نیست`}
-            faNums
-          />
-          <NumberField
-            label={"کد پستی"}
-            value={person.postalcode || `${"کد پستی"} موجود نیست`}
-          />
-        </View>
+
         {/*نشانی*/}
         <TextField
           label={"نشانی"}
@@ -111,7 +121,7 @@ function PersonDetails({
               ? addressNormalizer(person.address)
               : `${"آدرس"} موجود نیست`
           }
-          style={{ flexGrow: 1 }}
+          style={{ flexGrow: 1, marginTop: 2 }}
         />
       </View>
     </View>

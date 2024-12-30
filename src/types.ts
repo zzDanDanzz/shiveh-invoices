@@ -54,6 +54,7 @@ export interface History {
 export interface Invoice {
   id: number;
   client_id: number;
+
   details: Details;
   from_date: string;
   to_date: string;
@@ -66,13 +67,13 @@ export interface Invoice {
   cost_in_string: string;
   status: string;
   final_price: number;
-  discount_id:number;
-  discount_value:number;
+  discount_id: number | null;
+  discount_value: number;
   balance: number;
   plan: Plan;
   remainingDays?: any;
   remainOfPrevPlan?: any;
-  previousPlanName?:string
+  previousPlanName?: string;
 }
 
 interface User {
